@@ -4,6 +4,11 @@ EXEC SQL OPEN cursorname
 
 EXEC SQL close cursorname
 
-EXEC SQL WHENEVER NOT FOUND DO BREAK;
+EXEC SQL WHENEVER NOT FOUND DO BREAK; // This statemet will insert break at all exec sql statmenet in program 
+
+To avoid that
+use
+
+if(sqlca.sqlcode == 1403) break;
 
 EXEC SQL FETCH cursorname INTO :var1,:var2;
