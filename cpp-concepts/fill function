@@ -1,0 +1,13 @@
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+
+   char arr[]="123456";
+   printf("\n     arr   :: %s ",    arr      );
+   fill(arr,arr+5,'a');
+   printf("\n     arr   :: %s ",    arr      );
+
+   return 0;
+}
