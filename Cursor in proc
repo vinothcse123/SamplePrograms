@@ -11,6 +11,7 @@ use
 solution 1:
 if(sqlca.sqlcode == 1403) break;
 
-
+solution2:
+EXEC SQL WHENEVER NOTFOUND  CONTINUE;
 
 EXEC SQL FETCH cursorname INTO :var1,:var2;
