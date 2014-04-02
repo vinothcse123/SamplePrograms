@@ -1,0 +1,21 @@
+#include<stdio.h>
+#include<string.h>
+//#include"sqlca.h"
+
+EXEC SQL INCLUDE sqlca;
+EXEC SQL BEGIN DECLARE SECTION;
+ char *username="vinoth_db";
+ char *pwd="vinoth_db123";
+ char *str="vino";
+EXEC SQL END DECLARE SECTION;
+
+int main()
+{
+   EXEC SQL WHENEVER SQLERROR GOTO sqlerr;
+   EXEC SQL COnneCT :username IDENTIFIED BY :pwd USING :str;
+   printf("Success Connecting with database!");
+   return 0;
+
+sqlerr:
+   printf("Error occured in connecting with database");
+}
