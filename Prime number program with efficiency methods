@@ -1,0 +1,26 @@
+#include<iostream>
+#include<math.h>
+using namespace std;
+int main()
+{
+   bool flag=true;
+   unsigned long  long int start=1000000000001ULL,end=1000000010000ULL,i,k,sqrt_num;
+   for(i=start;i<=end;i=i+2)
+   {
+      flag=true;
+      sqrt_num=(unsigned int)sqrt(i*2);
+      for(k=3;k<=sqrt_num;k+=2)
+      {
+         if(i%k==0)
+         {
+            flag=false;
+            break;
+         }
+      }
+      if(flag)
+      {
+         cout<<"\n PRIME:"<<i<<"\n";
+      }
+   }
+   return 0;
+}
