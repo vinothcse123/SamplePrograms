@@ -9,9 +9,10 @@ EXEC SQL WHENEVER NOT FOUND DO BREAK; // This statemet will insert break at all 
 To avoid that
 use
 solution 1:
-if(sqlca.sqlcode == 1403) break;
+if(sqlca.sqlcode == 1403) break; (1403 - No data found)
 
 solution2:
 EXEC SQL WHENEVER NOTFOUND  CONTINUE;
+Dont confuse with the DO CONTINUE its different from normal continue
 
 EXEC SQL FETCH cursorname INTO :var1,:var2;
