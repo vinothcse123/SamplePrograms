@@ -1,0 +1,48 @@
+#include"iostream.h"
+Exec sql include sqlca;
+
+Exec sql begin declare section;
+int marks;
+Exec sql end declare section;
+
+
+int  main()
+{
+   Exec sql begin declare section;
+   char *usr1="vinoth/vinoth123@lyca";
+   sql_context usrcontext;
+   int offset=2;
+   varchar date[20];
+   Exec sql end declare section;
+
+   char *datesrc="02-JUL-2012";
+   strncpy((char *)date.arr,datesrc,strlen(datesrc));
+   date.len=strlen(datesrc);
+
+
+   Exec sql whenever sqlerror go to sqlerr;
+
+
+   Exec sql  context allocate :usrcontext;
+   Exec sql context use :usrcontext;
+   Exec sql connect :usr1;
+
+   
+   
+   /* Arithemetic operations on date */
+
+   Exec sql select MARKS  into :marks from MARK_LIST where EXAMDATE=(to_date(:date)+:offset) and ROLLNO='6665550001';
+
+   printf("\n MARKS: %d ",marks);
+
+
+
+
+
+   return 0;
+
+sqlerr:
+   printf("\nError in DB \n");
+
+   return 0; 
+}
