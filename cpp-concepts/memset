@@ -1,0 +1,28 @@
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+
+   char char_var[25];
+
+   char_var[1]='a';
+   printf("\n char_var before memset :: %s ", char_var );
+   memset(&char_var,'\0',sizeof(char_var));
+   printf("\n char_var  :: %p ", char_var );
+   printf("\n &char_var  :: %p ", &char_var );
+   printf("\n char_var after memset :: %s ", char_var );
+
+
+   return 0;
+}
+
+
+OUTPUT
+=========
+
+
+ char_var before memset :: ÿa
+ char_var  :: ffbffa60
+ &char_var  :: ffbffa60
+ char_var after memset ::
