@@ -29,3 +29,19 @@
     return 0;
 
  }
+
+
+
+OUTPUT:
+Printing up to err no 5
+My error description: : Not owner
+strerr:  Not owner
+
+My error description: : No such file or directory
+strerr:  No such file or directory
+
+My error description: : No such process
+strerr:  No such process
+
+My error description: : Interrupted system call
+strerr:  Interrupted system call
