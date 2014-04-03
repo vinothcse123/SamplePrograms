@@ -1,0 +1,35 @@
+ #include"stdio.h"
+ Exec sql include sqlca;
+
+ Exec sql begin declare section;
+ int marks;
+ int total;
+ Exec sql end declare section;
+
+
+ int  main()
+ {
+    Exec sql begin declare section;
+    char *usr1="vinoth/vinothcse123@vino";
+    sql_context usrcontext;
+    Exec sql end declare section;
+
+
+    Exec sql whenever sqlerror go to sqlerr;
+
+
+    Exec sql  context allocate :usrcontext;
+    Exec sql context use :usrcontext;
+    Exec sql connect :usr1;
+    Exec sql select MARKS  into :marks from MARK_LIST where ROLL LIKE '6';
+    printf("\n  marks: %d ",marks);
+   
+
+    return 0;
+	
+	 sqlerr:
+    printf("\nError in DB \n");
+
+    return 0;
+ }
+
