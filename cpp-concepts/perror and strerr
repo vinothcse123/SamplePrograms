@@ -1,0 +1,31 @@
+#include<iostream>
+ #include<errno.h> // if you include this no need to declare the errno variable
+ using namespace std;
+
+
+ /*******************************************
+  *The below code is just simulation
+  *errno variable will be updated with some value automatically by the program
+  *when error occurs
+  * *****************************************/
+
+
+ int main()
+ {
+   //  int errno; This is wronng because it is already defined in the errno.h
+    int i=-1,j=0;
+
+    printf("\n Printing up to err no 5");
+
+    for(i=1;i<5;i++)
+    {
+       errno=i;
+       perror("\nMy error description: ");   // No parameter is passed here. It takes the errno by default
+       printf("strerr:  %s\n",strerror(errno)); // Here the errno is passed
+
+    }
+
+    cout<<"\n";
+    return 0;
+
+ }
