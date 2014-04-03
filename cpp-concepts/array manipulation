@@ -1,0 +1,16 @@
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+
+   /* Array same address for normal array and &array
+   int a,*p;
+   p=&a;
+   printf("\n p :: %p ", p  );
+   printf("\n &p  :: %p ",&p  );
+
+
+
+   return 0;
+}
