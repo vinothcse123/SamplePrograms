@@ -1,0 +1,17 @@
+#include<iostream>
+#include <stdio.h>
+
+int main()
+{
+   using namespace std;
+   char s[100];
+
+   scanf("%[0-9/a,b]",s);
+
+   cout<<s<<"\n";
+   
+
+
+
+   return 0;
+}
