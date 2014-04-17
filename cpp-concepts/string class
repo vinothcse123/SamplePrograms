@@ -1,0 +1,33 @@
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+
+   string s="HAI1 HAI2 HAI3";
+
+   string token;
+   char *delimter=" ";  // Here the delimter can be any number of characters.
+
+   unsigned  int pos=0;
+
+  
+  
+   /* parse token with delimiter  */ 
+
+   do
+   {
+      pos = s.find(delimter);
+      printf("\npos  :: %d ", pos );
+      token=s.substr(0,pos);
+      if( !token.empty() )
+      {
+         cout << "\n" << token;
+      }
+      s.erase(0,pos+strlen(delimter));
+
+   }
+   while( pos != string::npos );
+
+   return 0;
+}
