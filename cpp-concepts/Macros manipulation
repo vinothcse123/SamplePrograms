@@ -1,0 +1,15 @@
+#include<iostream>
+using namespace std;
+#define PRINT_FUNC_NAME printf("Entered the function %s in line no %d\n",__FUNCTION__,__LINE__);
+
+
+
+int main()
+{
+  
+/* Print Function name using macro */
+   PRINT_FUNC_NAME
+      
+   return 0;
+}
+
