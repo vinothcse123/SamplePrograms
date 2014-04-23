@@ -19,3 +19,7 @@ EXEC SQL WHENEVER NOTFOUND  CONTINUE;
 Dont confuse with the DO CONTINUE its different from normal continue
 
 EXEC SQL FETCH cursorname INTO :var1,:var2;
+
+
+DECLARE == FREE
+OPEN == CLOSE
