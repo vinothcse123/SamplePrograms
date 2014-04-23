@@ -29,3 +29,7 @@ OPEN == CLOSE
 
 
 EXEC SQL ROLLBACK
+
+
+sqlca.sqlerrd[2] - Number of rows processed.
+
