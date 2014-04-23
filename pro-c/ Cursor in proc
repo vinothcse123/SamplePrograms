@@ -4,6 +4,9 @@ EXEC SQL OPEN cursorname
 
 EXEC SQL close cursorname
 
+ EXEC SQL FREE :cur_del_friends; // To deallocate the cursor
+
+
 EXEC SQL WHENEVER NOT FOUND DO BREAK; // This statemet will insert break at all exec sql statmenet in program 
 
 To avoid that
