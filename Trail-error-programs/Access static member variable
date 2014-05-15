@@ -1,0 +1,26 @@
+#include<iostream>
+
+class class_test
+{
+   public:
+      static int a;
+
+};
+
+int class_test::a; // Declare before use
+int main()
+{
+   using namespace std;
+ //   int class_test::a; Cannot declare here
+   class_test::a=20;
+   printf("\n class_test::a :: %d ", class_test::a ); 
+   
+   return 0;
+}
+
+
+
+OUTPUT
+========================================
+
+class_test::a :: 20 
