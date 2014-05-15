@@ -1,0 +1,25 @@
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+
+   unsigned int a=0;
+   int aa=-10;
+   a=(unsigned int)aa;
+   cout<<"\nUNSIGNED COUT"<<a;
+   printf("\nUNSIGNED PRINTF\n  :: %d ",a  ); 
+
+
+
+   return 0;
+}
+
+
+
+OUTPUT
+========================================
+
+
+UNSIGNED COUT4294967286
+UNSIGNED PRINTF -10
