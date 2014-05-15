@@ -1,0 +1,37 @@
+class class_test
+{
+   public:
+      int a;
+
+      class_test test_func();
+
+      static class_test* getinstance()
+      {
+         static class_test single_obj;
+         return &single_obj;
+      }
+
+};
+
+#include<iostream>
+
+int main()
+{
+   using namespace std;
+   class_test *c = class_test :: getinstance();
+   c->a=45;
+
+   class_test *cc = class_test :: getinstance();
+   printf("\n cc->a :: %d ", cc->a );
+
+   
+
+   return 0;
+}
+
+
+
+OUTPUT
+========================================
+
+cc->a :: 45
