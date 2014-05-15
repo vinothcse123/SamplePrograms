@@ -1,0 +1,41 @@
+#include<iostream>
+#include <stdlib.h>
+int main()
+{
+   using namespace std;
+
+   int i=0,item_read=0,j=0;
+
+
+   while(true)
+   {
+      item_read=0;
+      item_read=scanf("%d%d",&i,&j);
+       
+
+      if(item_read == 2)
+      {
+         printf(" Items read :: %d",item_read ); 
+      }
+      else
+      {
+         printf("\nError in reading!!!!!!");
+         getchar();
+         continue;
+      }
+
+   }
+
+
+   return 0;
+}
+
+
+
+OUTPUT
+========================================
+
+11
+
+2
+ Items read :: 2
