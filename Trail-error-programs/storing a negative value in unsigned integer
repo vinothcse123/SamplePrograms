@@ -4,11 +4,31 @@ int main()
 {
    using namespace std;
 
-   unsigned int a=0;
-   int aa=-10;
-   a=(unsigned int)aa;
-   cout<<"\nUNSIGNED COUT"<<a;
-   printf("\nUNSIGNED PRINTF\n  :: %d ",a  ); 
+   unsigned int ui=0;
+   int i=-10;
+   ui=(unsigned int)i; // 10 will not be stored in ui
+   printf("\nUsing type casting");
+   cout<<"\nUNSIGNED COUT using type casting"<<ui;
+   printf("\nUNSIGNED PRINTF using type casting(%%d)  :: %d ",ui ); 
+   printf("\nUNSIGNED PRINTF using type casting(%%u) :: %u ",ui ); 
+
+    ui=abs(i);
+    printf("\n\nUsing absoulte function");
+   cout<<"\nUNSIGNED COUT using abs "<<ui;
+   printf("\nUNSIGNED PRINTF using abs(%%d)  :: %d ",ui ); 
+   printf("\nUNSIGNED PRINTF using abs(%%u)  :: %u ",ui ); 
+
+
+    ui=(UINT_MAX+1)-i;
+    printf("Uint value after adding 1 %u",UINT_MAX+1);
+    printf("\n\nUsing UINT MAX function (uint max value: %u)",UINT_MAX);
+    cout<<"\nUNSIGNED COUT using abs "<<ui;
+   printf("\nUNSIGNED PRINTF using abs(%%d)  :: %d ",ui ); 
+   printf("\nUNSIGNED PRINTF using abs(%%u)  :: %u ",ui ); 
+    
+    
+
+    
 
 
 
@@ -16,10 +36,3 @@ int main()
 }
 
 
-
-OUTPUT
-========================================
-
-
-UNSIGNED COUT4294967286
-UNSIGNED PRINTF -10
