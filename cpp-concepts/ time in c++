@@ -11,6 +11,7 @@ int main()
    char formatted_time[25];
 
    time(&last_connect_time);
+// -1 will be returned if not able to fetch caledar time
    sleep(1);
    current_time=time(0); // This is similar to time(&current_time)
    printf("\n DIFFERENCE TIME IN SECONDS  :: %f ", difftime(current_time,last_connect_time) );
