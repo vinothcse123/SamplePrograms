@@ -1,0 +1,8 @@
+clear
+
+latestfile=$(ls -lrt | tail -1);
+parsefile=$( echo $latestfile | awk ' { print $(NF) } ' ) ;
+
+echo $parsefile;
+
+vim $parsefile;
