@@ -1,0 +1,87 @@
+
+class DBConnectionPool
+{
+   private:
+      static void *m_Context_;
+      char *m_Connection_String;
+         
+
+
+   public:
+         DBConnectionPool();
+         void getDBConnection();
+         int getage(char *p_msisdn);
+};
+
+
+
+#include"DBConnectionPool.h"
+#include"Enums.h"
+#include<string>
+
+#ifndef _DB_CONNECTION_POOL_
+#define _DB_CONNECTION_POOL_
+
+
+EXEC SQL INCLUDE sqlca;
+void  *DBConnectionPool::m_Context_;
+DBConnectionPool :: DBConnectionPool()
+{
+   m_Connection_String = "ABC/ABC123@ABCDE";
+}
+
+
+void DBConnectionPool ::  getDBConnection()
+{
+
+   EXEC SQL BEGIN DECLARE SECTION;
+
+   SQL_CONTEXT l_Sql_Context;
+   
+   char l_Connection_String[20];
+   
+   EXEC SQL END DECLARE SECTION;
+
+   memset(l_Connection_String,'\0',sizeof(l_Connection_String));
+   std::strcpy(l_Connection_String,m_Connection_String);
+
+   EXEC SQL  CONTEXT ALLOCATE :l_Sql_Context;
+   EXEC SQL  CONTEXT USE :l_Sql_Context;
+   EXEC SQL  CONNECT :l_Connection_String;
+
+   if(0 != sqlca.sqlcode)
+   {
+      printf("\n DB Connection failed! Error Message :: %s",sqlca.sqlerrm.sqlerrmc);
+   }
+
+   DBConnectionPool::m_Context_ = l_Sql_Context;
+}
+
+
+int DBConnectionPool ::  getage(char *p_msisdn)
+{
+   EXEC SQL BEGIN DECLARE SECTION;
+
+   VARCHAR ID[20];
+   SQL_CONTEXT l_Context;
+   int age;
+         
+   EXEC SQL END DECLARE SECTION;
+
+   memset(ID.arr,'\0',sizeof(ID.arr));
+   ID.len= strlen(p_msisdn);
+   strcpy((char *)ID.arr,p_msisdn);
+   l_Context = DBConnectionPool::m_Context_;
+   age = 0;
+
+   EXEC SQL CONTEXT USE :l_Context;
+
+   EXEC SQL SELECT ACCT INTO :age FROM PROFILE_T WHERE ID LIKE '6665550001';
+
+   printf("\n age %d",age); 
+   return age;
+      
+}
+
+
+#endif
