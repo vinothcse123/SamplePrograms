@@ -1,0 +1,43 @@
+clear
+printf "\tBackup started\n---------------------\n\n\n"
+
+
+
+echo "Are you want to backup the EXPLORE_DIR(y/n)"
+read choice
+datedir=$(date);
+printf "\nIs most important? (y/n)"
+read important
+datedir=${datedir//[[:space:]]/_}
+expdatedir="Explore_BK_"$datedir;
+Date_for_appening="RRBS_BK_"$datedir;
+bash_rc="Bash_rc_"$datedir
+vim_rc="Vim_rc_"$datedir
+
+
+
+if [ $important == "y" ]
+then
+printf "\n\nTrasferring to GOLD BACKUP"
+printf "\n\nBackup in progress...."
+
+cp -r /opt/product/vinoth/explore/ /opt/product/vinoth/Backup/Gold_backup/$expdatedir
+
+if [ $RRBS ==  "y" ] 
+then
+cp -r /opt/product/vinoth/Applications/rrbs/ /opt/product/vinoth/Backup/Gold_backup/$Date_for_appening
+fi
+
+
+
+else
+printf "\n\nTrasferring to SILVER BACKUP"
+printf "\n\nBackup in progress...."
+
+if [ $choice ==  "y" ] 
+then
+cp -r /opt/product/vinoth/Applications/rrbs/ /opt/product/vinoth/Backup/Silver_backup/$Date_for_appening
+fi
+
+fi
+printf "\n\nAll the data has been successfully backuped!\n\n Happy weekend!!!\n\n\n\n"
