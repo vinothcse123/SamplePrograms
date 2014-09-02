@@ -1,0 +1,20 @@
+clear
+
+latestfile=$(ls -lrt *.{c,cpp,sh,pc}  | tail -1);
+parsefile=$( echo $latestfile | awk ' { print $(NF) } ' ) ;
+rm a.out
+clear
+
+echo $parsefile;
+printf "================\n";
+
+g++ $parsefile -lsocket -lnsl -Wall
+
+if [ $? -ne 0 ]; then
+   printf "\n\n\n ERROR IN COMPILATION!!!\n\n"
+   return 0;
+fi
+
+
+printf "\n\n\n\nOUTPUT\n=========\n\n"
+a.out
