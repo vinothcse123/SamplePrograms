@@ -1,0 +1,3 @@
+sqlerr:
+   printf("\n    sqlca.sqlcode    :: %d ",      sqlca.sqlcode    ); 
+   printf("\n    sqlca.sqlcode    :: %s ",      sqlca.sqlerrm.sqlerrmc    ); 
