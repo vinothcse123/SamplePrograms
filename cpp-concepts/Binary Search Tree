@@ -1,0 +1,385 @@
+#include <stdio.h>
+#include <stdlib.h>
+int insert_node(int);
+
+typedef struct _data_node
+{
+   int value;
+   struct _data_node *left;
+   struct _data_node *right;
+}S_Binary_Tree;
+
+
+int insert_node(int value,S_Binary_Tree **DP_Root_Node);
+int Display_Nodes(S_Binary_Tree *P_Root_Node);
+int find_inorder_predecessor(S_Binary_Tree* P_Node);
+bool Delete_node(S_Binary_Tree **p_Root,int value);
+S_Binary_Tree* Find_Nodes(S_Binary_Tree *P_Root_Node,int p_Value);
+
+int main()
+{
+
+   int choice=0;
+   int value;
+   S_Binary_Tree *Root_Node=NULL;
+
+   while(1)
+   {
+      value = 0;
+      choice = 0;
+
+      printf("\n\n\n BINARY SEARCH TREE\n 1.Insert Node\n 2.Display Node\n 3.Delete Node\nEnter the option::");
+      scanf("%d",&choice);
+
+      switch(choice)
+      {
+         case 1:
+
+            printf("\nEnter the value");
+            scanf("%d",&value); 
+            insert_node(value,&Root_Node); 
+            Display_Nodes(Root_Node);
+            break;
+
+         case 2:
+            printf("\nInorder display of tree\n=============\n  "); 
+            Display_Nodes(Root_Node);
+            break;
+
+         case 3:
+            printf("\nEnter the value");
+            scanf("%d",&value); 
+            Delete_node(&Root_Node,value);
+            break;
+
+         default:
+            printf("\nInvalid Choice "); 
+      }
+
+   }
+
+   return 0;
+}
+
+
+
+int Display_Nodes(S_Binary_Tree *P_Root_Node)
+{
+   static int i=0;
+
+   if(i == 0)
+   {
+      i++;
+      printf("\nThe inorder values are\n"); 
+   }
+   
+   if(P_Root_Node == NULL)
+   {
+      printf("\n Empty tree"); 
+      return false;
+   }
+
+   if(P_Root_Node->left != NULL)
+   {
+      Display_Nodes(P_Root_Node->left);
+   }
+
+   printf("%d ", P_Root_Node->value); 
+
+   if(P_Root_Node->right != NULL)
+   {
+      Display_Nodes(P_Root_Node->right);
+   }
+   return true;
+
+}
+
+int insert_node(int value,S_Binary_Tree **DP_Root_Node)
+{
+   if(*DP_Root_Node == NULL)
+   {
+      *DP_Root_Node=(struct _data_node*)malloc(sizeof(struct _data_node));
+
+      (*DP_Root_Node)->value=value;
+      (*DP_Root_Node)->left=NULL;
+      (*DP_Root_Node)->right=NULL;
+      return true;
+   }
+
+   struct _data_node *temp,*iter;
+   temp=(struct _data_node*)malloc(sizeof(struct _data_node));
+   temp->value =value;
+   temp->right=NULL;
+   temp->left=NULL;
+
+
+   iter=*DP_Root_Node;
+
+   while( 1 )
+   {
+      if( iter->value < value )
+      {
+         if(iter->right == NULL)
+         {
+            iter->right=temp;     
+            break;
+         }
+         else
+         {
+            iter=iter->right;
+         }
+      }
+      else if(iter->value > value)
+      {
+         if(iter->left == NULL)
+         {
+            iter->left=temp;
+            break;
+         }
+         else
+         {
+            iter=iter->left;
+         }
+      }
+      else
+      {
+         printf("\n Node Already Exists\n");
+         break;
+      }
+   }
+
+   return true;
+}
+
+
+
+
+S_Binary_Tree* Find_Nodes(S_Binary_Tree *P_Root_Node,int p_Value)
+{
+   while(P_Root_Node != NULL) 
+   {
+      if(P_Root_Node->value == p_Value)
+      {
+         return P_Root_Node;
+      }
+      else
+      {
+         if(P_Root_Node->value < p_Value )
+         {
+            P_Root_Node=P_Root_Node->right;
+         }
+         else
+         {
+            P_Root_Node=P_Root_Node->left;
+         }
+      }
+   }
+
+   printf("\nValue not found in the BST (or) Tree is empty"); 
+   return NULL;
+}
+
+int find_inorder_predecessor(S_Binary_Tree* P_Node)
+{
+   bool l_found=false;
+   if(P_Node->right != NULL)
+   {
+      P_Node=P_Node->right;
+   }
+   else
+   {
+      return 0;
+   }
+
+   while(P_Node->left != NULL)
+   {
+      P_Node=P_Node->left;
+      l_found = true;
+   }
+
+   if(l_found == true)
+   {
+      return P_Node->value;
+   }
+   else
+   {
+      return 0;
+   }
+}
+
+bool Delete_node(S_Binary_Tree **p_Root,int p_value)
+{
+
+   bool isLeft = false;
+
+   S_Binary_Tree *Current_Node=NULL,*Next_Node=NULL,*temp=NULL;
+
+   Current_Node = *p_Root;
+
+
+   while( Current_Node != NULL )
+   {
+      printf("\n LOOPING");
+
+      /* If value of Root node matches with search value */
+      
+      if( (Current_Node)->value == p_value )
+      {
+         if(Current_Node->right == NULL && Current_Node->left == NULL)
+         {
+            printf("\nRoot Node matched with no children"); 
+            printf("\nDeleted the Root node"); 
+            free(Current_Node);
+            *p_Root = NULL;
+            return true;
+         }
+         else
+         {  // Find inorder
+
+            //IMPLEMENT CHECK RIGHT AND LEFT
+            printf("\nRoot Node Matched with the children"); 
+            int temp_inorder_value;
+
+            if(NULL != Current_Node->right)
+            {
+               temp = Current_Node->right;
+            }
+            else
+            {
+               temp = Current_Node->left;
+            }
+
+
+            while(NULL != (temp)->left)
+            {
+               temp=(temp)->left;
+            }
+
+            printf("\n inorder value :: %d ", temp->value );
+            temp_inorder_value = temp->value;
+
+            Delete_node(&Current_Node,(temp)->value);
+
+            Current_Node->value = temp_inorder_value;
+
+            break;            
+         }
+      }
+      
+      Next_Node = NULL;
+      isLeft = false;
+
+      printf("\n CUR NODE VALUE:: %d ", (Current_Node)->value ); 
+      printf("\n SEARCH VALUE :: %d ", p_value ); 
+
+      if(((Current_Node)->right != NULL) && (((Current_Node)->right)->value == p_value))
+      {
+         printf("\n NEXT NODE MATCHED RIGHT"); 
+         Next_Node = (Current_Node)->right;
+      }
+      else if( (Current_Node)->left != NULL && (((Current_Node)->left)->value == p_value) )
+      {
+         printf("\n NEXT NODE MATCHED LEFT"); 
+         Next_Node = (Current_Node)->left;
+         isLeft = true;
+      }
+
+      if(Next_Node != NULL)
+      {
+         if(NULL == (Next_Node)->left && NULL ==(Next_Node)->right)
+         {
+            printf("\n Node matched with no childred"); 
+            printf("\n DEL :: DEL VALUE :: %p",Next_Node); 
+            free(Next_Node);
+            if(isLeft)
+            {
+               printf("\n LINK TO LEFT"); 
+               (Current_Node)->left = NULL;
+            }
+            else
+            {
+               printf("\nLINK TO RIGHT");
+               printf("\n  :: %d ",(Current_Node)->value  ); 
+               (Current_Node)->right = NULL;
+            }
+            break;
+         }
+         else if((Next_Node)->right == NULL && (Next_Node)->left !=NULL)
+         {
+            printf("\n Node matched with one children"); 
+            temp=(Next_Node)->left;
+            free(Next_Node);
+            if(isLeft)
+            {
+               printf("\n LINK TO LEF"); 
+               (Current_Node)->left = temp;
+            }
+            else
+            {
+               printf("\n LINK TO RIGT"); 
+               (Current_Node)->right = temp;
+            }
+            break;
+         }
+         else if( (Next_Node)->left == NULL && (Next_Node)->right !=NULL )
+         {
+            printf("\n Node matched with one children"); 
+            temp=(Next_Node)->right;
+            free(Next_Node);
+            if(isLeft)
+            {
+               (Current_Node)->left = temp;
+            }
+            else
+            {
+               (Current_Node)->right = temp;
+            }
+            break;
+         }
+         else
+         {
+            printf("\n Node Matched with two children"); 
+            temp = (Next_Node)->right;
+
+            while(NULL != (temp)->left)
+            {
+               temp=(temp)->left;
+            }
+            printf("\n inorder value :: %d ", temp->value ); 
+
+
+            Delete_node((&(Next_Node)),(temp)->value);
+
+            (Next_Node)->value = (temp)->value;
+
+            break;
+         }
+
+      }
+      else
+      {
+         printf("\n MOVE TO NEXT"); 
+         if((Current_Node)->value > p_value)
+         {
+
+            Current_Node = (Current_Node)->left;
+         }
+         else
+         {
+            (Current_Node) = (Current_Node)->right;
+         }
+      }
+   }
+
+   if(Current_Node == NULL)
+   {
+      printf("\n Search Node not found!");
+      return false;
+   }
+   
+}
+
+
+/* ISSUE TRACKER */
+
+
