@@ -1,0 +1,12 @@
+export V_DB_ID
+
+if [ $V_DB_ID = 1 ]; then
+   CONN_STRING="vinoth/vinoth123@vino"
+else
+
+   CONN_STRING="vinoth/vinoth123@vino"
+fi;
+
+sqlplus $CONN_STRING    << EOF47
+   select sysdate from dual;
+EOF47
