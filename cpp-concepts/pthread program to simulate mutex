@@ -1,1 +1,37 @@
 
+#include<iostream>
+#include<pthread.h>
+#include<cstdio>
+#include <unistd.h>
+
+pthread_mutex_t mutex_c1;
+
+void* myFunction(void* param)
+{
+        int a=*(int *)param;
+        printf("\nThread %d entered", a);
+        fflush(stdout);
+        pthread_mutex_lock(&mutex_c1);
+
+        printf("\n Thread %d in critical area",a);
+        sleep(1);
+        printf("\n Thread %d out critical area",a);
+
+        pthread_mutex_unlock(&mutex_c1);
+}
+
+
+int main()
+{
+        pthread_t thread1;
+        int a=0;
+        pthread_create(&thread1,NULL,myFunction,&++a);
+        myFunction(&++a);
+        pthread_join(thread1,NULL);
+
+
+
+        return 0;
+}
+
+
