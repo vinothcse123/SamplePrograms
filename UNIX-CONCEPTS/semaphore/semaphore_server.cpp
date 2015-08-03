@@ -68,6 +68,12 @@ int main()
   }
 
   int semid=semget(sem_key,SEM_COUNT,IPC_CREAT|IPC_EXCL|0600);
+  /* IPC_CREAT - used to create a new semaphore
+  IPC_EXCL - Fail if semaphore is already created
+  */
+  
+  
+  
   if(0 > semid)
   {
     perror("Error in creating semaphore! Cause:");
