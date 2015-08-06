@@ -25,7 +25,7 @@ void* myFunction(void* param)
   fflush(stdout);
   sleep(5);
   pthread_mutex_unlock(&mutex_c1);
-  printf("\n Thread %d out critical area...",a);
+  printf("\n Thread %d out critical area...",a); 
 }
 
 
