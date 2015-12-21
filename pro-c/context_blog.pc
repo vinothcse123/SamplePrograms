@@ -1,0 +1,64 @@
+
+#include"stdio.h"
+Exec sql include sqlca;
+int  main()
+{
+   exec sql begin declare section;
+   char *usr1="usr1/usr1pwd@servicename1";
+   char *usr2="usr2/usr2pwd@servicename2";
+   char *usr3="usr2/usr2pwd@servicename3";
+   sql_context usrcontext1;
+   sql_context usrcontext2;
+   int avg_mark;
+   exec sql end declare section;
+   exec sql whenever sqlerror go to sqlerr;
+
+   // Connecting to default context
+
+   EXEC SQL CONNECT :usr1;
+
+   exec sql select AVG_MAR into :avg_mark from MARK_LIST where STUD_ID LIKE '121';
+   printf("\n Avg Mark at connected database: %d",avg_mark);
+
+   //allocating and connecting to usrcontext1
+
+   EXEC SQL CONTEXT ALLOCATE  :usrcontext1;
+   EXEC SQL CONTEXT USE :usrcontext1;
+   EXEC SQL CONNECT :usr2;
+
+
+   exec sql select AVG_MAR into :avg_mark from MARK_LIST where STUD_ID LIKE '121';
+   printf("\n Avg Mark at connected database: %d",avg_mark);
+
+   //allocating and connecting to usrcontext2
+
+
+   EXEC SQL CONTEXT ALLOCATE  :usrcontext2;
+   EXEC SQL CONTEXT USE :usrcontext2;
+   EXEC SQL CONNECT :usr2;
+
+
+   exec sql select AVG_MAR into :avg_mark from MARK_LIST where STUD_ID LIKE '121';
+   printf("\n Avg Mark at connected database: %d",avg_mark);
+
+   // Now i am connecting to default context database
+
+   EXEC SQL CONTEXT USE DEFAULT;
+   exec sql select AVG_MAR into :avg_mark from MARK_LIST where STUD_ID LIKE '121';
+   printf("\n Avg Mark at connected database: %d",avg_mark);
+
+   // Now i am connecting to usrcontext2  database
+
+   EXEC SQL CONTEXT USE :usrcontext2;
+   exec sql select AVG_MAR into :avg_mark from MARK_LIST where STUD_ID LIKE '121';
+   printf("\n Avg Mark at connected database: %d",avg_mark);
+
+   //By this way you can connect mutiple database and you can swith between them
+
+   return 0;
+
+sqlerr:
+   printf("\nError in DB \n");
+
+   return 0;
+}
