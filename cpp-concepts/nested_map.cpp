@@ -1,0 +1,50 @@
+#include<iostream>
+#include <map>
+
+int main()
+{
+   using namespace std;
+
+   map<int,int> test_map;
+
+   test_map.insert(make_pair(5,5));
+
+
+   map< int,map<int,int> > outer_map;
+
+   map<int,int> temp_map;
+
+   temp_map.insert(make_pair<int,int>(5,4));
+   outer_map.insert(make_pair(55,temp_map));
+
+   temp_map.clear();
+
+   temp_map.insert(make_pair(6,7));
+   outer_map.insert(make_pair(55,temp_map));
+
+   map<int, map<int,int> > ::  iterator out_iter;
+   map<int,int> :: iterator in_iter;
+
+   out_iter = outer_map.find(55);
+
+   if(out_iter != outer_map.end())
+   {
+      printf("\n VALUE PRESENT");
+
+      for( in_iter = (out_iter->second).begin(); in_iter  !=  (out_iter->second).end()   ; in_iter++ )
+      {
+         printf("\n inkey :: %d ", in_iter->first );
+         printf("\n value :: %d ", in_iter->second );
+      }
+   }
+   else
+   {
+      printf("\nNP  ");
+   }
+
+
+   printf("\n out_map.size :: %d ", outer_map.size() );
+   printf("\n temp_map.size :: %d ", temp_map.size() );
+
+   return 0;
+}
