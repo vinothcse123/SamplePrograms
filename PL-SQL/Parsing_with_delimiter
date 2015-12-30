@@ -1,0 +1,17 @@
+declare
+
+v_buffer VARCHAR(200);
+v_parsed_string VARCHAR(200);
+
+ 
+ begin
+ 
+   v_buffer:= 'VINOTH|SARAVANA|GOPAL';
+   dbms_output.put_line(v_buffer);
+   
+   v_parsed_string:= SUBSTR(v_buffer,1, INSTR(v_buffer,'|')-1);
+   
+       
+   dbms_output.put_line( 'PARSED STRING: '|| v_parsed_string );
+       
+ end;
