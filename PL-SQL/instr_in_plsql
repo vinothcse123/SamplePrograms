@@ -1,0 +1,15 @@
+declare
+
+v_buffer VARCHAR(200);
+
+ 
+ begin
+ 
+   v_buffer:= '12345|SARAVANA|GOPAL';
+   dbms_output.put_line(v_buffer);
+   
+   dbms_output.put_line('Getting the position of pipe..');
+   
+   dbms_output.put_line( INSTR(v_buffer,'|'));
+       
+ end;
