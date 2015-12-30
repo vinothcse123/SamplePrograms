@@ -1,0 +1,14 @@
+declare
+
+v_buffer VARCHAR(200);
+
+ 
+ begin
+ 
+   v_buffer:= 'VINOTH';
+   
+   IF v_buffer = 'VINOTH' THEN
+   dbms_output.put_line( 'BUFFER MATCHED!');
+   END IF;
+          
+ end;
