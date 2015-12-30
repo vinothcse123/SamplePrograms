@@ -1,0 +1,23 @@
+declare
+
+v_buffer1 VARCHAR(200);
+v_buffer2 VARCHAR(200);
+v_output VARCHAR(200);
+
+
+ begin
+  -- decode can be used only in the sql statements
+    
+  SELECT DECODE('VINO','VINO','VINOTH KUMAR G','RAM','RAM PRASAD''NO EQVIVALENT NAME CONFIGURED') INTO v_output FROM DUAL;
+  DBMS_OUTPUT.PUT_LINE(v_output);
+
+
+ SELECT DECODE('RAM','VINO','VINOTH KUMAR G','RAM','RAM PRASAD S','NO EQVIVALENT NAME CONFIGURED') INTO v_output FROM DUAL;
+  DBMS_OUTPUT.PUT_LINE(v_output);
+  
+     
+      
+   
+      
+ end;
+ 
