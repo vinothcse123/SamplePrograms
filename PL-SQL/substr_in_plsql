@@ -1,0 +1,15 @@
+declare
+
+v_buffer VARCHAR(200);
+
+ 
+ begin
+ 
+   v_buffer:= 'EXPLORING PLSQL';
+   dbms_output.put_line(v_buffer);
+   
+   dbms_output.put_line('Getting the first Three characters..');
+   
+   dbms_output.put_line( substr(v_buffer,1,3));
+       
+ end;
