@@ -11,7 +11,7 @@
 #define EXCHANGE_BUFFER_SIZE 1024
 
 void listenforClients(int socketFD);
-int tcpServerConnectionHandling(int socketFD,struct sockaddr_in *stSockaddr);
+int tcpServerConnectionHandling(int *socketFD,struct sockaddr_in *stSockaddr);
 void handleConnection(int client_fd);
 void establishConnection(int socketFD);
 fd_set active_fd, read_fd_set;
@@ -27,7 +27,7 @@ int main()
 	   FD_ZERO(&active_fd);    
 	
 	
-	tcpServerConnectionHandling(socketFD,&stSockaddr);
+	tcpServerConnectionHandling(&socketFD,&stSockaddr);
 	listenforClients(socketFD);	     
     FD_SET(socketFD, &active_fd);   
     
@@ -41,9 +41,12 @@ int main()
 
 
 
-int tcpServerConnectionHandling(int socketFD,struct sockaddr_in *stSockaddr)
+int tcpServerConnectionHandling(int *p_socketFD_ptr,struct sockaddr_in *stSockaddr)
 {
-	socketFD=-1;  // here assigned to -1 because the function will return 0 if success
+	if(NULL == p_socketFD_ptr)
+		return 0;
+	
+   int	socketFD=-1;  // here assigned to -1 because the function will return 0 if success
    int bind_status=-1;
 
 
@@ -72,7 +75,7 @@ int tcpServerConnectionHandling(int socketFD,struct sockaddr_in *stSockaddr)
 
    //Not to invoke  there
 
-   bind_status=bind(socketFD,(struct sockaddr *) &stSockaddr,sizeof(stSockaddr));
+   bind_status=bind(socketFD,(struct sockaddr *) stSockaddr,sizeof(struct sockaddr));
 
    if(bind_status==-1)
    {
@@ -86,6 +89,8 @@ int tcpServerConnectionHandling(int socketFD,struct sockaddr_in *stSockaddr)
    }  
    
    
+   *p_socketFD_ptr=socketFD;
+   
    return 1;
 }
 
@@ -98,11 +103,11 @@ void listenforClients(int socketFD)
    listen_status=listen(socketFD,1);  // vino change here
    if(listen_status == 0)
    {
-      printf("\n\nListening for clients (Only 12 connections permitted at a time) ....");
+      printf("\n\nListening for clients (Only 12 connections permitted at a time) ....\n");
    }
    else
    {
-      perror("Error in listening :: ");
+      perror("Error in listening :: \n");
    }
 }
 
