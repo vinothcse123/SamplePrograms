@@ -48,7 +48,7 @@ int tcpServerConnectionHandling(int *p_socketFD_ptr,struct sockaddr_in *stSockad
 	
    int	socketFD=-1;  // here assigned to -1 because the function will return 0 if success
    int bind_status=-1;
-
+int enable = 1;
 
    printf("\nGoing to allocate resource for socket! We have passed family type,connection type,protocol name");
 
