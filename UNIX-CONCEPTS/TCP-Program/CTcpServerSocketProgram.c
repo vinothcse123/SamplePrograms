@@ -64,6 +64,9 @@ int tcpServerConnectionHandling(int *p_socketFD_ptr,struct sockaddr_in *stSockad
       exit(EXIT_FAILURE);
    }
 
+	if (setsockopt(socketFD, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+		perror("setsockopt(SO_REUSEADDR) failed");
+	
    printf("\n\nGoing to allocate the IPaddress and port number to the socket resources allocated.");
 
    
