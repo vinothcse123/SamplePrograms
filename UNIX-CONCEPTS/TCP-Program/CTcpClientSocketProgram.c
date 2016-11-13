@@ -5,11 +5,31 @@
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>  // close()
+#include <netinet/in.h>
+
+
+#define SERVER_IPADDRESS  "127.0.0.1"
+#define SERVER_PORT 4557
+#define EXCHANGE_BUFFER_SIZE 1024
+
+void handleConnection(int connection_fd);
+int tcpClientConnectionHandling(int *p_connectionFdPtr);
+
 
 int main()
 {
    int connection_fd=-1;  // here assigned to -1 because the function will return 0 if success
-   char buffer[100];
+   tcpClientConnectionHandling(&connection_fd);
+   
+   handleConnection(connection_fd);
+  
+   return 0;
+}
+
+int tcpClientConnectionHandling(int *p_connectionFdPtr)
+{
+	int connection_fd=-1;  // here assigned to -1 because the function will return 0 if success
+
 
    printf("\nGoing to allocate resource for socket! We have passed family type,connection type,protocol name");
 
@@ -31,30 +51,35 @@ int main()
    struct sockaddr_in stSockaddr;
    memset(&stSockaddr,'\0',sizeof(stSockaddr));
    stSockaddr.sin_family=AF_INET;
-   stSockaddr.sin_port=htons(1200);
-   stSockaddr.sin_addr.s_addr=inet_addr("192.168.151.71");
+   stSockaddr.sin_port=htons(SERVER_PORT);
+   stSockaddr.sin_addr.s_addr=inet_addr(SERVER_IPADDRESS);
 
 
    printf("\nConnecting to server for acceptance...");
 
-   if(connect(connection_fd,(sockaddr*)&stSockaddr,sizeof(const sockaddr)) < 0)
+   if(connect(connection_fd,(struct sockaddr *)&stSockaddr,sizeof(const struct sockaddr)) < 0)
    {
       perror("Unable to connet server.. ");
       exit(-1);
    }
 
-   printf("\n Connected with server succesfully !!!");
+	*p_connectionFdPtr=connection_fd;
+   printf("\n Connected with server succesfully !!!");	   
+   
+   return 1;
+}
 
-   /* Send the handshake message to server */
 
-   memset(buffer,'\0',sizeof(buffer));
+void handleConnection(int connection_fd)
+{
+	 /* Send the handshake message to server */
+	 
+	 char buffer[EXCHANGE_BUFFER_SIZE];
+	   memset(buffer,'\0',sizeof(buffer));
    strcpy(buffer,"Hai Server... I am your client. How are you?");
    if(send(connection_fd,buffer,sizeof(buffer),0) < 0)
    {
       perror("Send Error");
    }
-
-
-   return 0;
 }
 
