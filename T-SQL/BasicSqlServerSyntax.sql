@@ -32,6 +32,13 @@ BEGIN
 END;
 
 
+-- SELECT INTO VARIABLE
+
+DECLARE @SelectIntoVariable VARCHAR(MAX);
+SELECT @SelectIntoVariable  = (SELECT ENTITY_ID from RULES.dbo.ENTITY     where ENTITY_ID = 'V6M_ENT')
+PRINT @SelectIntoVariable
+
+
 
 -- Function
 
