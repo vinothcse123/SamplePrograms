@@ -28,3 +28,8 @@ x=vinoth
 if [ "$x" = "vinoth" ]; then
   echo "It is vinoth"
 fi
+
+
+#check environment variable is set or not
+
+if [ -z "$var" ]; then echo "var is blank" ;
