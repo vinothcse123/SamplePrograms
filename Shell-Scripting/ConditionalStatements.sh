@@ -45,3 +45,16 @@ if [ ! -z ${DEBUG} ] || [ ! -z ${MYENV} ]; then
         echo "DEBUG or MYENV is set"
 fi
 
+
+#cascading If statement
+
+if [ ! -z ${DEBUG} ] || [ ! -z ${MYENV} ]; then
+	if [ ! -z ${MYANOTHERVARIABLE} ]; then
+    	MYANOTHERVARIABLE1=$MYANOTHERVARIABLE
+	else	
+		exit 1
+	fi	
+else
+	DEBUG1=$DEBUG
+fi
+
