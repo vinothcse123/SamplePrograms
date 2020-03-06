@@ -37,3 +37,11 @@ if [ -z "$MYENV" ]; then echo "MYENV is not set" ;
 if [ ! -z ${MYENV} ]; then 
         echo "MYENV is set"
 fi
+
+
+# OR Condition
+
+if [ ! -z ${DEBUG} ] || [ ! -z ${MYENV} ]; then
+        echo "DEBUG or MYENV is set"
+fi
+
