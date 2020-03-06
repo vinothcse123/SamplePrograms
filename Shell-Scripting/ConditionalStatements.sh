@@ -58,3 +58,10 @@ else
 	DEBUG1=$DEBUG
 fi
 
+
+
+#checking variable value
+
+if [ X"$MYENV" = X"1" ]; then
+
+
