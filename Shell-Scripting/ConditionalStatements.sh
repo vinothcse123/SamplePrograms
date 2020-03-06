@@ -32,4 +32,8 @@ fi
 
 #check environment variable is set or not
 
-if [ -z "$var" ]; then echo "var is blank" ;
+if [ -z "$MYENV" ]; then echo "MYENV is not set" ;
+
+if [ ! -z ${MYENV} ]; then 
+        echo "MYENV is set"
+fi
