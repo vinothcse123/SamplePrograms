@@ -18,3 +18,13 @@ else
 fi;
 
 echo $V_DB_ID
+
+
+
+# Comparing string
+
+x=vinoth
+
+if [ "$x" = "vinoth" ]; then
+  echo "It is vinoth"
+fi
