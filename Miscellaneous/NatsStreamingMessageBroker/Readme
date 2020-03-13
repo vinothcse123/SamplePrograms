@@ -1,0 +1,5 @@
+1. install nats streaming library
+2. Install nats streaming server and start the server
+3. compile publisher and subscriber
+4. start subscriber
+5. start publisher
