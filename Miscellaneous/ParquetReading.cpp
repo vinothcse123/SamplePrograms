@@ -17,7 +17,7 @@ g++ lowLevelParquetReading.cpp -I ./libs/parquet/include/ -L ./libs/parquet/lib/
 #include <parquet/metadata.h>
 
 
-
+//#define VERBOSE 0
 
 ///@brief Computation of elapsed time of program
 class ElapsedTime
@@ -71,7 +71,7 @@ public:
     ///@return   None
     void printTime()
     {
-        std::cout << "Elapsed time[" << m_startMsg << "](microseconds): " << m_elapsedTime << '\n';
+        std::cout << "Elapsed time[" << m_startMsg << "](milliseconds): " << m_elapsedTime << '\n';
     }
 
     ///@brief    stop capturing elapsed time and print values
@@ -79,8 +79,8 @@ public:
     void stop()
     {
         end = std::chrono::steady_clock::now();
-        m_elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-        std::cout << "Elapsed time[" << m_startMsg << "](microseconds): " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << '\n';
+        m_elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+        std::cout << "Elapsed time[" << m_startMsg << "](milliseconds): " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << '\n';
     }
 
     ///@brief    stopAccumulate the elapsed time and print values
@@ -88,7 +88,7 @@ public:
     void stopAccumulate()
     {
         end = std::chrono::steady_clock::now();
-        m_elapsedTime += std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        m_elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
     }
 
     ///@brief    destructor
@@ -130,7 +130,7 @@ public:
     double getUserCpuTimeInSeconds()
     {
         getrusage(RUSAGE_SELF, &cpuResUsage);
-        //tv_usec is microseconds, so dividing by 1000000
+        //tv_usec is milliseconds, so dividing by 1000000
         return (cpuResUsage.ru_utime.tv_sec + (cpuResUsage.ru_utime.tv_usec / static_cast<double>(numberOfMicroSecInSec)));
     }
 
@@ -146,7 +146,7 @@ public:
     double getSystemCpuTimeInSeconds()
     {
         getrusage(RUSAGE_SELF, &cpuResUsage);
-        //tv_usec is microseconds, so dividing by 1000000
+        //tv_usec is milliseconds, so dividing by 1000000
         return (cpuResUsage.ru_stime.tv_sec + (cpuResUsage.ru_stime.tv_usec / static_cast<double>(numberOfMicroSecInSec)));
     }
 
@@ -192,13 +192,19 @@ int main()
     elapsedTimeObj.start("Total");
     cpuTimeObj.start("Total");
 
-    const int columnSize = 8;
-    uint64_t qwRowsToRead=5;
+    const int columnSize = 5;
+    uint64_t qwRowsToRead=0;
+    uint64_t qwCurrentChunkToRead=40000;
     uint64_t qwOffset = 0;
+    int16_t deflevel[qwCurrentChunkToRead];
+    int64_t *pInt64Buffer=nullptr;
+    double *pDoubleBuffer=nullptr;
+    int64_t qwNNValues = 0;           
+
 
     std::cout << "Reading " << std::endl;
 
-    std::unique_ptr<parquet::ParquetFileReader> pParquetReader = parquet::ParquetFileReader::OpenFile("part-123.parquet", false);
+    std::unique_ptr<parquet::ParquetFileReader> pParquetReader = parquet::ParquetFileReader::OpenFile("123.parquet", false);
 
     std::shared_ptr<parquet::FileMetaData> pFileMetaData = pParquetReader->metadata();
 
@@ -212,24 +218,75 @@ int main()
     {
         std::shared_ptr<parquet::RowGroupReader> rgReader = pParquetReader->RowGroup(rowGroupIdx);
 
+        qwRowsToRead = rgReader->metadata()->num_rows();
+
         for (int colIdx = 0; colIdx < columnSize; colIdx++)
         {
             colReaderVec[rowGroupIdx][colIdx] = rgReader->Column(colIdx);
 
             switch (colReaderVec[rowGroupIdx][colIdx]->type())
 			{
-                case parquet::Type::INT64:
+                        case parquet::Type::INT64:
 						{
-                            int64_t qwNNValues = 0;
-                            int16_t deflevel[qwRowsToRead+1];
-                            int64_t buffer[qwRowsToRead+1];
-							int64_t qwRowsRead = static_cast<parquet::Int64Reader *>(colReaderVec[rowGroupIdx][colIdx].get())->ReadBatch(qwRowsToRead, &deflevel[qwOffset], nullptr, &((int64_t *)buffer)[qwOffset], &qwNNValues);
-                             std::cout << buffer[0] << '\n';
-							break;
+                            int64_t qwRowsRead=0;
+                            pInt64Buffer = new int64_t[qwRowsToRead];
+
+                            while(qwRowsRead < qwRowsToRead)
+                            {
+                                qwRowsRead = static_cast<parquet::Int64Reader *>(colReaderVec[rowGroupIdx][colIdx].get())->ReadBatch(qwRowsToRead, &deflevel[qwOffset], nullptr, &((int64_t *)pInt64Buffer)[qwOffset], &qwNNValues);
+
+                                #ifdef VERBOSE
+                            for (uint64_t qwRowIdx = 0; qwRowIdx < 5; ++qwRowIdx)
+							{
+                                std::cout << colIdx << " : "<< pInt64Buffer[qwRowIdx] << "\n";
+							}
+                                #endif
+                            }                            
 						}
+                        break;
+
+                        case parquet::Type::BYTE_ARRAY:
+						{
+                            int64_t qwRowsRead=0;
+                            parquet::ByteArray *byteArrayBuf = (parquet::ByteArray*)new char[sizeof(parquet::ByteArray) * qwRowsToRead];
+
+                            while(qwRowsRead < qwRowsToRead)
+                            {
+                                qwRowsRead = static_cast<parquet::ByteArrayReader *>(colReaderVec[rowGroupIdx][colIdx].get())->ReadBatch(qwRowsToRead, &deflevel[qwOffset], nullptr, byteArrayBuf, &qwNNValues);
+
+                                #ifdef VERBOSE
+                                for (uint64_t qwRowIdx = 0; qwRowIdx < 1; ++qwRowIdx)
+                                {
+                                    char arr[100];
+                                strncpy(arr,(const char*)byteArrayBuf[qwRowIdx].ptr,byteArrayBuf[qwRowIdx].len);
+
+                                std::cout << colIdx << " : " <<  arr << "\n";
+                                }
+                                #endif
+                            }                            
+						}
+                        break;
+
+						case parquet::Type::DOUBLE:
+						{
+                            int64_t qwRowsRead=0;
+                            pDoubleBuffer=new double[qwCurrentChunkToRead];
+
+                            while(qwRowsRead < qwRowsToRead)
+                            {
+                                qwRowsRead += static_cast<parquet::DoubleReader *>(colReaderVec[rowGroupIdx][colIdx].get())->ReadBatch(qwCurrentChunkToRead, &deflevel[qwOffset], nullptr, &((double *)pDoubleBuffer)[qwOffset], &qwNNValues);
+
+                                #ifdef VERBOSE
+                                for (uint64_t qwRowIdx = 0; qwRowIdx < 1; ++qwRowIdx)
+                                {
+                                    std::cout << colIdx << " : "<< pDoubleBuffer[qwRowIdx] << "\n";
+                                }
+                                #endif
+                            }                            
+						}
+                        break;
             }
-        }
-            
+        }     
     }
 
     std::cout << pFileMetaData->num_row_groups() << std::endl;
