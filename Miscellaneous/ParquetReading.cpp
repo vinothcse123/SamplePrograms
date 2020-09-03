@@ -198,7 +198,7 @@ int main()
 
     std::cout << "Reading " << std::endl;
 
-    std::unique_ptr<parquet::ParquetFileReader> pParquetReader = parquet::ParquetFileReader::OpenFile("/cip-data/fg_cipmigl1_1053551.db/trag_aggregated_data/agd_tpr_id=846/part-00000-0a58aab7-fa84-5021-9634-1c2da0947e51.parquet", false);
+    std::unique_ptr<parquet::ParquetFileReader> pParquetReader = parquet::ParquetFileReader::OpenFile("part-123.parquet", false);
 
     std::shared_ptr<parquet::FileMetaData> pFileMetaData = pParquetReader->metadata();
 
