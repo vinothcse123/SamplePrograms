@@ -29,10 +29,11 @@ void IS_ERROR(OCIError *pOciErrorHandle, sword errorCode)
 	}
 }
 
+
 int main()
 {
 	using namespace std;
-	string schemaNameStr = "SCHEMA", userStr = "userStr", passwordStr = "passwordStr";
+	string schemaNameStr = "schemaNameStr", userStr = "userStr", passwordStr = "passwordStr";
 	string tableNameStr = "V6Play";
 
 	OCIEnv *pOciEnv;
@@ -123,20 +124,10 @@ int main()
 						   (ub4)tableNameStr.length(),
 						   (ub4)OCI_ATTR_NAME, pOciErrorHandle);
 
-	//setting function context
-	/*
-	sword funcCtxErr = OCIHandleAlloc((void *)pOciDirectPathHandle, (void **)&pFuncCtxArray,
-									  (ub4)OCI_HTYPE_DIRPATH_FN_CTX,
-									  (size_t)0, (void **)0);
 
-	if (OCI_SUCCESS != funcCtxErr)
-	{
-		handleError(pOciErrorHandle);
 
-		std::cout << " \n============== V6P: OCI_HTYPE_DIRPATH_COLUMN_ARRAY RETURN R ==================" << funcCtxErr << std::endl;
-	}
-	*/
-	int numberOfCol = 1;
+	
+	int numberOfCol =2;
 	/* set number of columns to be loaded */
 	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
 										 (void *)&numberOfCol,
@@ -152,14 +143,18 @@ int main()
 
 	/* get parameter handle on the column */
 
+
+/* set external attributes on the column */
+
 	OCIParam *colDesc;
 
 	IS_ERROR(pOciErrorHandle, OCIParamGet((const void *)colLstDesc_ctl,
 										  (ub4)OCI_DTYPE_PARAM, pOciErrorHandle,
 										  (void **)&colDesc, 1));
 
-	/* set external attributes on the column */
-	/* column name */
+	
+
+	/* column name - First column */
 	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)colDesc, (ub4)OCI_DTYPE_PARAM,
 										 (void *)&"MyNumber",
 										 (ub4)strlen((const char *)"MyNumber"),
@@ -173,11 +168,41 @@ int main()
 										 (ub4)OCI_ATTR_DATA_TYPE, pOciErrorHandle));
 
 	/* max data size */
-	ub4 maxlen_fld = 8;
+	ub4 maxlen_fld = 32;
 	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)colDesc, (ub4)OCI_DTYPE_PARAM,
 										 (void *)&maxlen_fld,
 										 (ub4)0,
 										 (ub4)OCI_ATTR_DATA_SIZE, pOciErrorHandle));
+
+	
+
+	/* column name - [second column] */
+
+
+	IS_ERROR(pOciErrorHandle, OCIParamGet((const void *)colLstDesc_ctl,
+										  (ub4)OCI_DTYPE_PARAM, pOciErrorHandle,
+										  (void **)&colDesc, 2)); // 2 - represents second pos
+
+
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)colDesc, (ub4)OCI_DTYPE_PARAM,
+										 (void *)&"MYVARCHAR",
+										 (ub4)strlen((const char *)"MYVARCHAR"),
+										 (ub4)OCI_ATTR_NAME, pOciErrorHandle));
+
+	/* column type */
+	exttyp_col = SQLT_CHR;
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)colDesc, (ub4)OCI_DTYPE_PARAM,
+										 (void *)&exttyp_col,
+										 (ub4)0,
+										 (ub4)OCI_ATTR_DATA_TYPE, pOciErrorHandle));
+
+	/* max data size */
+	maxlen_fld = 2000;
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)colDesc, (ub4)OCI_DTYPE_PARAM,
+										 (void *)&maxlen_fld,
+										 (ub4)0,
+										 (ub4)OCI_ATTR_DATA_SIZE, pOciErrorHandle));
+
 
 	IS_ERROR(pOciErrorHandle, OCIDirPathPrepare(pOciDirectPathHandle, pOciServiceContextHandle, pOciErrorHandle));
 
@@ -199,10 +224,27 @@ int main()
 	std::cout << " \n============== V6P: Finished  OCI_HTYPE_DIRPATH_STREAM ==================" << std::endl;
 
 	// Set entries in the column array to point to the input data value for each column
-	ub4 a = 10;
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 0, 0, (ub1 *)&a, sizeof(a), OCI_DIRPATH_COL_COMPLETE));
+	int64_t a[2];
+	a[0]=20;
+	a[1]=10;
 
-	ub4 rowcnt = 1;	  /* number of rows in column array */
+
+	
+	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 0, 0, (ub1 *)&a[0], sizeof(a[0]), OCI_DIRPATH_COL_COMPLETE));
+	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 1, 0, (ub1 *)&a[1], sizeof(a[0]), OCI_DIRPATH_COL_COMPLETE));
+	
+
+		char stringCol[2][100];
+	strcpy(stringCol[0],"HAI");
+	strcpy(stringCol[1],"HELLO");
+
+
+	
+	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 0, 1, (ub1 *)&stringCol[0], sizeof(stringCol[0]), OCI_DIRPATH_COL_COMPLETE));
+	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 1, 1, (ub1 *)&stringCol[1], sizeof(stringCol[1]), OCI_DIRPATH_COL_COMPLETE));
+
+
+	ub4 rowcnt = 2;	  /* number of rows in column array */
 	ub4 startoff = 0; /* starting row offset into column array  */
 
 	std::cout << " \n============== V6P: Finished OCIDirPathColArrayEntrySet  ==================" << std::endl;
