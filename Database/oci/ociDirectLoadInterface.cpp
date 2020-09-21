@@ -6,6 +6,34 @@
 #include <string>
 #include <cstring>
 
+using namespace std;
+
+
+class OCIConnection
+{
+	public:
+	string schemaNameStr = "schemaNameStr", userStr = "schemaNameStr", passwordStr = "schemaNameStr";
+	string tableNameStr = "V6PlayPartition";
+	string partitionNameStr = "RANGE_1_TO_100";
+	OCIEnv *pOciEnv;
+	OCIError *pOciErrorHandle;
+	OCISvcCtx *pOciServiceContextHandle = nullptr;
+	sword ociret; /* return code from OCI calls */
+	OCIDirPathCtx *pOciDirectPathHandle;
+	OCIDirPathFuncCtx *pFuncCtxArray;
+	OCIDirPathColArray *pColumnArray;
+	OCIDirPathStream *pDirectPathStream;
+	ub2 id_col;
+	OCIParam *colLstDesc_ctl; /* column list parameter handle */
+	OCIServer *pOciServerHandle = nullptr;
+	OCISession *pOciSessionHandle = nullptr;
+
+
+	int connectToDb();
+	int directLoad();
+
+};
+
 void handleError(OCIError *pOciErrorHandle)
 {
 	sb4 errcode = 0;
@@ -16,6 +44,8 @@ void handleError(OCIError *pOciErrorHandle)
 		std::cout << " \n==============OCI ERROR: " << errcode << " : " << (const char *)errorBuf << std::endl;
 	else
 		std::cout << " \n==============Error in getting OCI ERROR: " << errorCode << (const char *)errorBuf << std::endl;
+
+	exit(-1);
 }
 
 void IS_ERROR(OCIError *pOciErrorHandle, sword errorCode)
@@ -30,25 +60,9 @@ void IS_ERROR(OCIError *pOciErrorHandle, sword errorCode)
 }
 
 
-int main()
+
+int OCIConnection::connectToDb()
 {
-	using namespace std;
-	string schemaNameStr = "schemaNameStr", userStr = "userStr", passwordStr = "passwordStr";
-	string tableNameStr = "V6Play";
-
-	OCIEnv *pOciEnv;
-	OCIError *pOciErrorHandle;
-	OCISvcCtx *pOciServiceContextHandle = nullptr;
-	sword ociret; /* return code from OCI calls */
-	OCIDirPathCtx *pOciDirectPathHandle;
-	OCIDirPathFuncCtx *pFuncCtxArray;
-	OCIDirPathColArray *pColumnArray;
-	OCIDirPathStream *pDirectPathStream;
-	ub2 id_col;
-	OCIParam *colLstDesc_ctl; /* column list parameter handle */
-	OCIServer *pOciServerHandle = nullptr;
-	OCISession *pOciSessionHandle = nullptr;
-
 	//Create Environment
 
 	if (OCIEnvCreate((OCIEnv **)&pOciEnv, (ub4)OCI_DEFAULT,
@@ -86,7 +100,6 @@ int main()
 		handleError(pOciErrorHandle);
 
 	//Allocate session handle
-
 	if (OCI_SUCCESS != OCIHandleAlloc((dvoid *)pOciEnv, (dvoid **)&pOciSessionHandle, (ub4)OCI_HTYPE_SESSION, (size_t)0, (dvoid **)0))
 		handleError(pOciErrorHandle);
 
@@ -105,7 +118,11 @@ int main()
 	//Begin the session
 	if (OCI_SUCCESS != OCISessionBegin(pOciServiceContextHandle, pOciErrorHandle, pOciSessionHandle, OCI_CRED_RDBMS, (ub4)OCI_DEFAULT))
 		handleError(pOciErrorHandle);
+}
 
+
+int OCIConnection::directLoad()
+{
 	// set session parameters for authentication
 	if (OCI_SUCCESS != OCIAttrSet((dvoid *)pOciServiceContextHandle, (ub4)OCI_HTYPE_SVCCTX, (dvoid *)pOciSessionHandle, (ub4)0, (ub4)OCI_ATTR_SESSION, pOciErrorHandle))
 		handleError(pOciErrorHandle);
@@ -119,10 +136,16 @@ int main()
 	std::cout << " \n============== V6P: Initialized Direct path context! ==================" << std::endl;
 
 	//Set table name
-	sword ddd = OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+	IS_ERROR(pOciErrorHandle,(OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
 						   (void *)tableNameStr.c_str(),
 						   (ub4)tableNameStr.length(),
-						   (ub4)OCI_ATTR_NAME, pOciErrorHandle);
+						   (ub4)OCI_ATTR_NAME, pOciErrorHandle)));
+
+	//Set partition name
+	IS_ERROR(pOciErrorHandle,OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+						   (void *)partitionNameStr.c_str(),
+						   (ub4)partitionNameStr.length(),
+						   (ub4)OCI_ATTR_SUB_NAME, pOciErrorHandle));
 
 
 
@@ -267,4 +290,16 @@ int main()
 	//Invoke the direct path finishing function
 	if (OCI_SUCCESS != OCIDirPathFinish(pOciDirectPathHandle, pOciErrorHandle))
 		handleError(pOciErrorHandle);
+
+}
+
+int main()
+{
+	OCIConnection ociConnection;
+
+	if(0 != ociConnection.connectToDb())
+		return -1;
+
+	if(0 != ociConnection.directLoad())
+		return -1;
 }
