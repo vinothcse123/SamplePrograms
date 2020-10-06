@@ -6,6 +6,7 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ class OCIConnection
 public:
 	string schemaNameStr = "schemaNameStr", userStr = "schemaNameStr", passwordStr = "schemaNameStr";
 	string tableNameStr = "V6PlayPartition";
-	string partitionNameStr = "RANGE_1_TO_100";
+	string partitionNameStr = "RANGE_1_TO_100K";
 	OCIEnv *pOciEnv;
 	OCIError *pOciErrorHandle;
 	OCISvcCtx *pOciServiceContextHandle = nullptr;
@@ -221,36 +222,46 @@ int OCIConnection::directLoad()
 	std::cout << " \n============== V6P: Finished  OCI_HTYPE_DIRPATH_STREAM ==================" << std::endl;
 
 	// Set entries in the column array to point to the input data value for each column
-	vector<int64_t> intVec(100,88);
-	vector<const char*> stringVec(100,"STRING_VALUE");
 	int rowIndex=0;
-	int dataSize=99;
+	int dataSize=2000;
+	int intValue=0;
+	vector<int64_t> intVec(dataSize,intValue);
+	vector<string> stringVec(dataSize,string("STRING_VALUE_")+to_string(intValue));
+
+	for_each(intVec.begin(),intVec.end(),[&](int64_t &i){ i=intValue++; });
+	intValue=0;
+	for_each(stringVec.begin(),stringVec.end(),[&](string &str){ str=string("STRING_VALUE_")+to_string(intValue++); });
 
 
 
 	for(int i=0; i<dataSize; i++)
 	{
 		IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, rowIndex,0,  (ub1 *)&intVec[i], sizeof(intVec[i]), OCI_DIRPATH_COL_COMPLETE));
-		IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, rowIndex, 1, (ub1 *)stringVec[i], strlen(stringVec[i]), OCI_DIRPATH_COL_COMPLETE));
+		IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, rowIndex, 1, (ub1 *)stringVec[i].c_str(), stringVec[i].length(), OCI_DIRPATH_COL_COMPLETE));
 
 
 		rowIndex++;
+
+		if (rowIndex == 10)
+		{
+		
+			ub4 rowcnt = rowIndex; /* number of rows in column array */
+			ub4 startoff = 0;	   /* starting row offset into column array  */
+
+			//Convert a column array to a direct path stream format
+			IS_ERROR(pOciErrorHandle, OCIDirPathColArrayToStream(pColumnArray, pOciDirectPathHandle,
+																 pDirectPathStream, pOciErrorHandle,
+																 rowcnt, startoff));
+
+			OCIDirPathColArrayReset(pColumnArray,pOciErrorHandle);
+			rowIndex = 0;
+		}
 	}
 
 	
 
 
-	ub4 rowcnt = rowIndex;	  /* number of rows in column array */
-	ub4 startoff = 0; /* starting row offset into column array  */
 
-	std::cout << " \n============== V6P: Finished OCIDirPathColArrayEntrySet  ==================" << std::endl;
-
-	//Convert a column array to a direct path stream format
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayToStream(pColumnArray, pOciDirectPathHandle,
-														 pDirectPathStream, pOciErrorHandle,
-														 rowcnt, startoff));
-
-	std::cout << " \n============== V6P: Finished  OCIDirPathColArrayToStream ==================" << std::endl;
 
 	// Load the direct path stream
 	IS_ERROR(pOciErrorHandle, OCIDirPathLoadStream(pOciDirectPathHandle, pDirectPathStream,
