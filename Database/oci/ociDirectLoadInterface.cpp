@@ -5,6 +5,7 @@
 #include <oci.h>
 #include <string>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 
@@ -220,21 +221,26 @@ int OCIConnection::directLoad()
 	std::cout << " \n============== V6P: Finished  OCI_HTYPE_DIRPATH_STREAM ==================" << std::endl;
 
 	// Set entries in the column array to point to the input data value for each column
-	int64_t a[2];
-	a[0] = 20;
-	a[1] = 10;
+	vector<int64_t> intVec(100,88);
+	vector<const char*> stringVec(100,"STRING_VALUE");
+	int rowIndex=0;
+	int dataSize=99;
 
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 0, 0, (ub1 *)&a[0], sizeof(a[0]), OCI_DIRPATH_COL_COMPLETE));
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 1, 0, (ub1 *)&a[1], sizeof(a[0]), OCI_DIRPATH_COL_COMPLETE));
 
-	char stringCol[2][100];
-	strcpy(stringCol[0], "HAI");
-	strcpy(stringCol[1], "HELLO");
 
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 0, 1, (ub1 *)&stringCol[0], sizeof(stringCol[0]), OCI_DIRPATH_COL_COMPLETE));
-	IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, 1, 1, (ub1 *)&stringCol[1], sizeof(stringCol[1]), OCI_DIRPATH_COL_COMPLETE));
+	for(int i=0; i<dataSize; i++)
+	{
+		IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, rowIndex,0,  (ub1 *)&intVec[i], sizeof(intVec[i]), OCI_DIRPATH_COL_COMPLETE));
+		IS_ERROR(pOciErrorHandle, OCIDirPathColArrayEntrySet(pColumnArray, pOciErrorHandle, rowIndex, 1, (ub1 *)stringVec[i], strlen(stringVec[i]), OCI_DIRPATH_COL_COMPLETE));
 
-	ub4 rowcnt = 2;	  /* number of rows in column array */
+
+		rowIndex++;
+	}
+
+	
+
+
+	ub4 rowcnt = rowIndex;	  /* number of rows in column array */
 	ub4 startoff = 0; /* starting row offset into column array  */
 
 	std::cout << " \n============== V6P: Finished OCIDirPathColArrayEntrySet  ==================" << std::endl;
