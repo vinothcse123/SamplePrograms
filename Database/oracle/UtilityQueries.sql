@@ -1,4 +1,7 @@
 
+--H:OBJECTS
+
+SELECT * FROM ALL_OBJECTS; 
 
 --H:Table
 
@@ -11,6 +14,9 @@ select * from all_mviews where  lower(mview_name) LIKE lower('%ddd%');
 
 
 --H:column
+
+--columns of the table
+select * from all_tab_columns where TABLE_NAME LIKE '%ALL_INDEX%' AND COLUMN_NAME LIKE '%STATUS%';
 
 --constraints of table
 select * from all_constraints where lower(table_name) like lower('ddd');
@@ -55,6 +61,9 @@ select * from v$session;
 select * from v$mystat;
 
 
+--H:index
+
+SELECT STATUS,IDX.* FROM all_indexes IDX WHERE TABLE_NAME LIKE '%V6%';
 
 --H:ETC
 
