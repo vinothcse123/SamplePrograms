@@ -33,6 +33,13 @@ c_Type1 arithmetic_oper<c_Type1> :: sub(c_Type1 a,c_Type1 b)
    return a-b;
 }
 
+template<class T>
+void callMemberFunctionOfUnknownType(T type)
+{
+    //Here keyword template should be added because T can be any type and we are instructing compiler to ignore validation at compile time.
+   type.template add(5,10);
+}
+
 
 int main()
 {
@@ -57,12 +64,19 @@ int main()
    char_operation.variable_name='A';
    printf("\nUsing a class as char type :: %c ",char_operation.variable_name);
 
+   //passing template and calling member function of that
+   callMemberFunctionOfUnknownType(int_operation);
+
+
+
    return 0;
 }
-
+/*
 OUTPUT:
 Using a class as a integer :: 10 
 ADDITION OF GIVEN VALUE IS 15
 ADDITION OF GIVEN VALUE IS with type casting 15
 SUBTRACTION OF GIVEN VALUE IS 25.500000
 Using a class as char type :: A 
+
+*/
