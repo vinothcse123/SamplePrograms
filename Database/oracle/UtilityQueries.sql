@@ -3,6 +3,10 @@
 
 SELECT * FROM ALL_OBJECTS; 
 
+--Package to get table definition
+select dbms_metadata.get_ddl('TABLE', 'TABLE_NAME') from user_tables;
+
+
 --H:Table
 
 select * from all_tables where  table_name LIKE '%ddd%';
@@ -63,7 +67,11 @@ select * from v$mystat;
 
 --H:index
 
-SELECT STATUS,IDX.* FROM all_indexes IDX WHERE TABLE_NAME LIKE '%V6%';
+SELECT STATUS,IDX.* FROM all_indexes IDX WHERE TABLE_NAME LIKE 'DD' AND TABLE_OWNER LIKE '%DDDD%';
+
+SELECT IDX.* FROM all_ind_columns IDX WHERE INDEX_NAME LIKE '%DDD%' AND TABLE_OWNER LIKE '%DDD%';;
+
+alter session set skip_unusable_indexes = true;
 
 --H:ETC
 
