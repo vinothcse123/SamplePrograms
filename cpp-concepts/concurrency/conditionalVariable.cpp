@@ -19,6 +19,7 @@ void threadModule(int myInput)
 void go() {
   std::unique_lock<std::mutex> lck(mtx);
   ready = true;
+      lck.unlock();
   cv.notify_all();
 }
 
@@ -35,6 +36,7 @@ int main()
      }
 
     std::cout << "Notifying one thread..." << '\n';
+      //Lock is not handled, understand why?
      cv.notify_one();
 
      std::cout << "Notifying all thread..." << '\n';
