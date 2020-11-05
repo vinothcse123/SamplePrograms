@@ -190,7 +190,9 @@ def pymyFuncTakingConst(a):
     myFuncTakingConst(a)
 
 def makeWaitWithCondVariable():
-    c_makeWaitWithCondVariable()
+    with nogil:
+        c_makeWaitWithCondVariable()
 
 def unlockConditionVariable():
-    c_unlockConditionVariable()
+    with nogil:
+        c_unlockConditionVariable()
