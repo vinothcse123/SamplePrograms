@@ -1,4 +1,7 @@
 from myPxdFile cimport sameFunctionNameinBoth as c_sameFunctionNameinBoth 
+from myPxdFile cimport unlockConditionVariable as c_unlockConditionVariable
+from myPxdFile cimport makeWaitWithCondVariable as c_makeWaitWithCondVariable
+
 from myPxdFile cimport FunctionWithArgs as c_FunctionWithArgs
 from myPxdFile cimport FunctionWithVector as c_FunctionWithVector
 from myPxdFile cimport FunctionWithUniquePtr as c_FunctionWithUniquePtr
@@ -10,7 +13,9 @@ from myPxdFile cimport myTemplateFunction
 from myPxdFile cimport myFunctionTakingClass as c_myFunctionTakingClass
 from myPxdFile cimport returnBooleanValue as c_returnBooleanValue
 from myPxdFile cimport MyCppClass
-
+from myPxdFile cimport throwException
+cimport myPxdFile as cppmyPxdFile
+from myPxdFile cimport myFuncTakingConst
 
 from libcpp.memory cimport unique_ptr
 from cython.operator cimport dereference as deref
@@ -34,9 +39,11 @@ def FunctionWithVector(myId):
     c_FunctionWithVector(myId);
 
 
-cdef class MyPythonClass:
+cdef class MyExtensiveClass:
     cdef public int myInt 
-    cdef  unique_ptr[int] myUniqPtr 
+    cdef  unique_ptr[int] myUniqPtr     
+    
+    
 
     def __init__(self):
         self.myInt = 1009
@@ -44,31 +51,35 @@ cdef class MyPythonClass:
     myPythonVar = 1030
 
     cdef void myCdefFunc(self):
-        pass
+        cdef  unique_ptr[MyCppClass] myUniqPtrMyCppClass
+        myUniqPtrMyCppClass.reset(new MyCppClass())
 
-    def myPythonClass(self):
+        #cdef  unique_ptr[MyCppClass.MyInnerClass] myUniqPtrMyInnerClass
+        #myUniqPtrMyInnerClass.reset(new MyCppClass.MyInnerClass())
+
+    def MyExtensiveClass(self):
         #myCdefFunc() - Use non class function to use this functionality
         pass
 
-    def derefencePointer(self,MyPythonClass2 otherObject):
+    def derefencePointer(self,MyExtensiveClass2 otherObject):
         deref(otherObject.myUniqPtr2)
 
 
-cdef class MyPythonClass2:
+cdef class MyExtensiveClass2:
     cdef  unique_ptr[int] myUniqPtr2
 
 
 def returnPythonClass():
-    myObj = MyPythonClass()
+    myObj = MyExtensiveClass()
     print(myObj.myInt)
     return myObj
 
-#Note :  myPythonClassObj is declared with type. This is called type declaration. This is done so because using python object, we are referring the c type myUniqPtr
+#Note :  MyExtensiveClassObj is declared with type. This is called type declaration. This is done so because using python object, we are referring the c type myUniqPtr
 
-def takePythonObjectAndAccessCType(MyPythonClass myPythonClassObj):
-    print(myPythonClassObj.myPythonVar)
-    print(myPythonClassObj.myInt)
-    c_FunctionWithUniquePtr(myPythonClassObj.myUniqPtr)
+def takePythonObjectAndAccessCType(MyExtensiveClass MyExtensiveClassObj):
+    print(MyExtensiveClassObj.myPythonVar)
+    print(MyExtensiveClassObj.myInt)
+    c_FunctionWithUniquePtr(MyExtensiveClassObj.myUniqPtr)
 
 class MyPythonEnum:
     MyPythonEnumValue1 = 200
@@ -170,3 +181,16 @@ def defFuncUsingInt():
 
 def returnBooleanValue():
     return c_returnBooleanValue()
+
+
+def pythrowException():
+    throwException()
+
+def pymyFuncTakingConst(a):
+    myFuncTakingConst(a)
+
+def makeWaitWithCondVariable():
+    c_makeWaitWithCondVariable()
+
+def unlockConditionVariable():
+    c_unlockConditionVariable()
