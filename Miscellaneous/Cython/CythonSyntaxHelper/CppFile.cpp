@@ -3,7 +3,13 @@
 #include<string>
 #include<tuple>
 using namespace std;
+#include <thread>
+#include <iostream>
+#include <condition_variable> // std::condition_variable
 
+std::mutex mtx;
+std::condition_variable cv;
+bool ready = false;
 
 
 static void myCFunction()
@@ -53,6 +59,13 @@ class MyCppClass
     int myInt=100;
     string myString;
     MyEnum myEnumObj;
+
+    class MyInnerClass
+    {
+        public:
+        MyInnerClass();   
+    int myInnerInt=100;
+    };
 };
 
 
@@ -91,3 +104,54 @@ class MyTemplateClass
 {
     T a;
 };
+
+struct MyException : public exception {
+   const char * what () const throw () {
+      return "C++ Exception";
+   }
+};
+ 
+
+void throwException()
+{
+    throw MyException();
+}
+
+
+void myFuncTakingConst(const int a)
+{
+    std::cout << "myFuncTakingConst "<<  a<< std::endl;
+}
+
+
+
+
+
+
+void threadModule(int myInput)
+{
+      std::unique_lock<std::mutex> lck(mtx);
+         while (!ready) cv.wait(lck);
+
+    std::cout << "Thread Id: " << std::this_thread::get_id() << std::endl;
+    std::cout << "Input: " << myInput << std::endl;
+}
+
+void unlockConditionVariable()
+{
+    std::cout << "Unlocking..." << std::endl;
+    std::unique_lock<std::mutex> lck(mtx);
+    ready = true;
+    lck.unlock();
+    cv.notify_all();
+    std::cout << "unlocked..." << std::endl;
+}
+
+void makeWaitWithCondVariable()
+{
+    std::cout << "start waiting..." << std::endl;
+    std::unique_lock<std::mutex> lck(mtx);
+    while (!ready)
+        cv.wait(lck);
+    std::cout << "Gone out of waiting..." << std::endl;
+}
