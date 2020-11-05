@@ -8,7 +8,9 @@ cimport cython
 
 cdef extern from "CppFile.cpp":
     void sameFunctionNameinBoth()
-
+    void unlockConditionVariable()
+    void makeWaitWithCondVariable()
+    
 cdef extern from "CppFile.cpp":
     void FunctionWithArgs(string myName)
 
@@ -20,9 +22,6 @@ ctypedef fused genericFusedType:
     cython.int
     cython.double
     cython.p_char
-    
-
-
 
 cdef extern from "CppFile.cpp":
     void FunctionWithUniquePtr(unique_ptr[int] &myuniquePtr)
@@ -42,11 +41,19 @@ cdef extern from "CppFile.cpp":
         string myString
         MyEnum myEnumObj
 
+        #cppclass MyInnerClass:
+            #MyInnerClass()
+            #int myInnerInt
+
     bool myFunctionTakingClass(MyCppClass obj)
     
     cdef cppclass MyTemplateClass[T]:
         pass
 
     ctypedef MyTemplateClass[int64_t] Int64
+
+    void throwException() except +
+
+    void myFuncTakingConst(const int a)
 
 
