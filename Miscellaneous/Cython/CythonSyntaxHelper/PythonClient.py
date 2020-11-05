@@ -1,4 +1,9 @@
 import CythonFunctions
+from  CythonFunctions import *
+import threading
+import os
+import time
+import sys
 
 CythonFunctions.directPythonFunc();
 CythonFunctions.pythonCallingCFunc();
@@ -30,3 +35,22 @@ CythonFunctions.defFuncUsingInt()
 
 print(CythonFunctions.returnBooleanValue())
 
+
+try:
+    CythonFunctions.pythrowException()
+except RuntimeError as e:
+    print(e)
+
+
+
+#Conditional variable test
+def threadFunc(id):
+    print("producerThread")
+    #makeWaitWithCondVariable()
+
+
+
+producerThread = threading.Thread(target=threadFunc, args=(10,))
+producerThread.start()
+print("Main thread continues job after starting thread...")
+#unlockConditionVariable()
