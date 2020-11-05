@@ -46,11 +46,11 @@ except RuntimeError as e:
 #Conditional variable test
 def threadFunc(id):
     print("producerThread")
-    #makeWaitWithCondVariable()
+    makeWaitWithCondVariable()
 
 
 
 producerThread = threading.Thread(target=threadFunc, args=(10,))
 producerThread.start()
 print("Main thread continues job after starting thread...")
-#unlockConditionVariable()
+unlockConditionVariable()
