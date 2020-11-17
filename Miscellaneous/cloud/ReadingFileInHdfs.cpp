@@ -39,6 +39,72 @@ With name as "fs.azure.account.auth.type.vinoth.dfs.core.windows.net"
 
 */
 
+
+void readusingChunkedArray(const string &strInputPath, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
+{
+	try
+	{
+		using namespace arrow::io;
+		using namespace arrow;
+
+		const int64_t strBufferferSize = 10000;
+		char strBuffer[strBufferferSize];
+
+		//Read and write to different path
+
+		std::shared_ptr<HdfsReadableFile> infile;
+		PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &infile));
+
+		int64_t file_size = infile->GetSize().ValueOrDie();
+
+		    parquet::arrow::FileReaderBuilder builder;
+    parquet::ReaderProperties properties = parquet::default_reader_properties();
+    parquet::ArrowReaderProperties arrowprops(true);
+    arrowprops.set_batch_size(10000);
+    arrowprops.set_pre_buffer(true);
+    PARQUET_THROW_NOT_OK(builder.Open(infile, properties));
+    std::unique_ptr<parquet::arrow::FileReader> pFileReader;
+    PARQUET_THROW_NOT_OK(builder.properties(arrowprops)->Build(&pFileReader));
+
+    std::shared_ptr<parquet::FileMetaData> pFileMetaData;
+    pFileMetaData = pFileReader->parquet_reader()->metadata();
+
+    std::cout << " \nNumber of rows " << pFileMetaData->RowGroup(0)->num_rows() << std::endl;
+
+    std::shared_ptr<arrow::Schema> arrowSchemaPtr;
+    pFileReader->GetSchema(&arrowSchemaPtr);
+    for (auto i = 0; i < arrowSchemaPtr->num_fields(); i++)
+    {
+        std::cout << "FieldName " << arrowSchemaPtr->field(i)->name() << std::endl;
+    }
+
+    std::shared_ptr<parquet::arrow::RowGroupReader> rgReader = pFileReader->RowGroup(0);
+    std::shared_ptr<parquet::arrow::ColumnChunkReader> colReaderVec;
+    colReaderVec = rgReader->Column(0);
+
+    std::shared_ptr<arrow::ChunkedArray> ChunkedArray;
+    colReaderVec->Read(&ChunkedArray);
+    std::cout << " \n Number of rows read " << ChunkedArray->length() << std::endl;
+
+    std::shared_ptr<::arrow::Array> arrowArray = ChunkedArray->chunk(0);
+
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[0]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[1]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[2]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[3]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[4]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[5]) << std::endl;
+    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[7]) << std::endl;
+
+
+
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << e.what() << '\n';
+	}
+}
+
 void readAndWriteFileInAdlsG2(const string &strInputPath, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
 {
 	try
@@ -119,4 +185,6 @@ int main()
 	//string path = "/path/without/prefix/MyParquet.parquet";
 
 	readAndWriteFileInAdlsG2(path, hadoopFileSysObj);
+	readusingChunkedArray(path, hadoopFileSysObj);
+	
 }
