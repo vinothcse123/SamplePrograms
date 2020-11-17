@@ -3,3 +3,4 @@ define sb
 end
 
 source v6SavedBreakpoints.txt
+set print address off
