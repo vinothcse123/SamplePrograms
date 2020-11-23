@@ -82,3 +82,8 @@ begin
 Dbms_Snapshot.Refresh( 'dd','f'); 
 End;
 /
+
+
+--H:PRIVILEGE
+
+SELECT * FROM DBA_SYS_PRIVS WHERE PRIVILEGE LIKE '%CONTEXT%';
