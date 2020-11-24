@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string>
+
+#include <arrow/io/api.h>
+#include <parquet/exception.h>
+#include "parquet/api/reader.h"
+#include <parquet/arrow/reader.h>
+#include "arrow/status.h"
+#include "arrow/buffer.h"
+#include "arrow/io/hdfs.h"
+#include <arrow/api.h>
+#include <arrow/io/api.h>
+#include "parquet/api/reader.h"
+#include <parquet/arrow/reader.h>
+#include <parquet/arrow/writer.h>
+#include <parquet/exception.h>
+#include "arrow/io/interfaces.h"
+#include "parquet/arrow/schema.h"
+#include "arrow/status.h"
+#include "arrow/testing/util.h"
+#include "parquet/properties.h"
+#include "parquet/file_reader.h"
+#include "parquet/platform.h"
+#include "parquet/arrow/schema.h"
+#include <arrow/ipc/api.h>
+#include <arrow/api.h>
+#include <parquet/arrow/reader.h>
+#include <parquet/arrow/writer.h>
+#include "arrow/util/uri.h"
+#include <parquet/arrow/writer.h>
+#include <parquet/file_writer.h>
+#include "arrow/util/io_util.h"
+
+#define DEBUG 1
+
+using std::endl;
+using std::string;
+using namespace arrow::internal;
+
+	
+int main()
+{
+    try
+	{
+		using namespace arrow::io;
+		using namespace arrow;
+
+		string path="myPath/myparquet.parquet";
+
+		//Read and write to different path
+
+		std::shared_ptr<ReadableFile> file;
+		file = ReadableFile::Open(path).ValueOrDie();
+
+		int64_t g_qBufferferSize = 500000;
+		char strBuffer[g_qBufferferSize];
+		Result<int64_t> dw_curReadBytesRes;
+		PARQUET_THROW_NOT_OK(dw_curReadBytesRes = (*file).Read(g_qBufferferSize, (void *)strBuffer));
+		std::cout << "dw_curReadBytesRes  "  << dw_curReadBytesRes.ValueOrDie() << endl;
+
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << e.what() << '\n';
+	}
+}
+
