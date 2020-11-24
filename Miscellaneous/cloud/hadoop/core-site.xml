@@ -1,0 +1,18 @@
+<configuration>
+<property>
+  <name>fs.azure.account.auth.type.MyAzureAccount.dfs.core.windows.net</name>
+  <value>SharedKey</value>
+  <description>
+  </description>
+</property>
+<property>
+  <name>fs.azure.account.key.MyAzureAccount.dfs.core.windows.net</name>
+<value>MY_ACCESS_HEY_OR_SHARED_KEY_OF_STORAGE_ACCCOUNT</value>
+  <description>
+  The secret password. Never share these.
+  </description>
+</property>
+
+
+</configuration>
+
