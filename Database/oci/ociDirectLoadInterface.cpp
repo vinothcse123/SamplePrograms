@@ -13,7 +13,9 @@ using namespace std;
 class OCIConnection
 {
 public:
-	string schemaNameStr = "schemaNameStr", userStr = "schemaNameStr", passwordStr = "schemaNameStr";
+	//V6P
+	string schemaNameStr = "VINOTH", userStr = "VINOTH", passwordStr = "VINOTH";
+
 	string tableNameStr = "V6PlayPartition";
 	string partitionNameStr = "RANGE_1_TO_100K";
 	OCIEnv *pOciEnv;
@@ -86,6 +88,20 @@ int OCIConnection::connectToDb()
 	//Connect to server
 
 	IS_ERROR(pOciErrorHandle, OCIServerAttach(pOciServerHandle, pOciErrorHandle, (text *)schemaNameStr.c_str(), (sb4)schemaNameStr.length(), (ub4)OCI_DEFAULT));
+
+	bool isParallel = TRUE;
+	// Setting parallel load option
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+										 (void *)&isParallel,
+										 (ub1)0,
+										 (ub1)OCI_ATTR_DIRPATH_PARALLEL, pOciErrorHandle));
+
+	ub1 skipFlag = OCI_DIRPATH_INDEX_MAINT_SKIP_ALL;
+
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+										 (void *)&skipFlag,
+										 (ub1)0,
+										 (ub1)OCI_ATTR_DIRPATH_SKIPINDEX_METHOD, pOciErrorHandle));
 
 	//set server context
 
@@ -203,6 +219,15 @@ int OCIConnection::directLoad()
 										 (ub4)0,
 										 (ub4)OCI_ATTR_DATA_SIZE, pOciErrorHandle));
 
+	// Number of records to be loaded in one
+	unsigned long long int bufSize=10000;
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+										 (void *)&bufSize,
+										 (ub4)0,
+										 (ub4)OCI_ATTR_BUF_SIZE, pOciErrorHandle));
+
+
+
 	IS_ERROR(pOciErrorHandle, OCIDirPathPrepare(pOciDirectPathHandle, pOciServiceContextHandle, pOciErrorHandle));
 
 	std::cout << " \n============== V6P: Initialized OCIDirPathPrepare! ==================" << std::endl;
@@ -223,7 +248,7 @@ int OCIConnection::directLoad()
 
 	// Set entries in the column array to point to the input data value for each column
 	int rowIndex=0;
-	int dataSize=2000;
+	int dataSize=10;
 	int intValue=0;
 	vector<int64_t> intVec(dataSize,intValue);
 	vector<string> stringVec(dataSize,string("STRING_VALUE_")+to_string(intValue));
@@ -242,7 +267,7 @@ int OCIConnection::directLoad()
 
 		rowIndex++;
 
-		if (rowIndex == 10)
+		if (rowIndex == 2)
 		{
 		
 			ub4 rowcnt = rowIndex; /* number of rows in column array */
@@ -252,22 +277,16 @@ int OCIConnection::directLoad()
 			IS_ERROR(pOciErrorHandle, OCIDirPathColArrayToStream(pColumnArray, pOciDirectPathHandle,
 																 pDirectPathStream, pOciErrorHandle,
 																 rowcnt, startoff));
+			// Load the direct path stream
+			IS_ERROR(pOciErrorHandle, OCIDirPathLoadStream(pOciDirectPathHandle, pDirectPathStream,
+												   pOciErrorHandle));
 
 			OCIDirPathColArrayReset(pColumnArray,pOciErrorHandle);
+			OCIDirPathStreamReset(pDirectPathStream,pOciErrorHandle);
 			rowIndex = 0;
 		}
 	}
 
-	
-
-
-
-
-	// Load the direct path stream
-	IS_ERROR(pOciErrorHandle, OCIDirPathLoadStream(pOciDirectPathHandle, pDirectPathStream,
-												   pOciErrorHandle));
-
-	std::cout << " \n============== V6P: Finished   OCIDirPathLoadStream ==================" << std::endl;
 
 	//Invoke the direct path finishing function
 	IS_ERROR(pOciErrorHandle, OCIDirPathFinish(pOciDirectPathHandle, pOciErrorHandle));
