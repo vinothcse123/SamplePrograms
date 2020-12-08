@@ -14,7 +14,7 @@ class OCIConnection
 {
 public:
 	//V6P
-	string schemaNameStr = "VINOTH", userStr = "VINOTH", passwordStr = "VINOTH";
+	//string schemaNameStr = "VINOTH", userStr = "VINOTH", passwordStr = "VINOTH";
 
 	string tableNameStr = "V6PlayPartition";
 	string partitionNameStr = "RANGE_1_TO_100K";
@@ -89,19 +89,7 @@ int OCIConnection::connectToDb()
 
 	IS_ERROR(pOciErrorHandle, OCIServerAttach(pOciServerHandle, pOciErrorHandle, (text *)schemaNameStr.c_str(), (sb4)schemaNameStr.length(), (ub4)OCI_DEFAULT));
 
-	bool isParallel = TRUE;
-	// Setting parallel load option
-	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
-										 (void *)&isParallel,
-										 (ub1)0,
-										 (ub1)OCI_ATTR_DIRPATH_PARALLEL, pOciErrorHandle));
-
-	ub1 skipFlag = OCI_DIRPATH_INDEX_MAINT_SKIP_ALL;
-
-	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
-										 (void *)&skipFlag,
-										 (ub1)0,
-										 (ub1)OCI_ATTR_DIRPATH_SKIPINDEX_METHOD, pOciErrorHandle));
+	
 
 	//set server context
 
@@ -149,6 +137,20 @@ int OCIConnection::directLoad()
 										 (void *)partitionNameStr.c_str(),
 										 (ub4)partitionNameStr.length(),
 										 (ub4)OCI_ATTR_SUB_NAME, pOciErrorHandle));
+
+bool isParallel = TRUE;
+	// Setting parallel load option
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+										 (void *)&isParallel,
+										 (ub1)0,
+										 (ub1)OCI_ATTR_DIRPATH_PARALLEL, pOciErrorHandle));
+
+	ub1 skipFlag = OCI_DIRPATH_INDEX_MAINT_SKIP_ALL;
+
+	IS_ERROR(pOciErrorHandle, OCIAttrSet((void *)pOciDirectPathHandle, (ub4)OCI_HTYPE_DIRPATH_CTX,
+										 (void *)&skipFlag,
+										 (ub1)0,
+										 (ub1)OCI_ATTR_DIRPATH_SKIPINDEX_METHOD, pOciErrorHandle));
 
 	int numberOfCol = 2;
 	/* set number of columns to be loaded */
