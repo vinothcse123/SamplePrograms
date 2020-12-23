@@ -28,6 +28,7 @@
 #include <parquet/arrow/writer.h>
 #include "arrow/util/uri.h"
 #include <parquet/arrow/writer.h>
+#include <parquet/file_writer.h>
 
 #define DEBUG 1
 
@@ -43,7 +44,7 @@ With name as "fs.azure.account.auth.type.vinoth.dfs.core.windows.net"
 
 */
 
-void writeFileInAdlsG2(const string &strInputPath, const string &outputDirectory, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
+void writeFileInGen2UsingFileWriter(const string &strInputPath, const string &outputDirectory,const string &strOutputPath, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
 {
 	try
 	{
@@ -57,6 +58,137 @@ void writeFileInAdlsG2(const string &strInputPath, const string &outputDirectory
 
 		int64_t file_size = file->GetSize().ValueOrDie();
 
+		
+
+
+		const std::string outputPath = outputDirectory + "/" + strOutputPath;
+
+		std::cout << outputPath << std::endl;
+
+		std::shared_ptr<parquet::schema::GroupNode> m_parquetSchema;
+		std::shared_ptr<parquet::WriterProperties> m_Props;
+		parquet::WriterProperties::Builder m_Builder;
+		parquet::schema::NodeVector m_Fields;
+		parquet::Repetition::type repetition =  parquet::Repetition::REQUIRED;
+		m_Fields.push_back(parquet::schema::PrimitiveNode::Make("MY_INT_COLUMN", repetition, parquet::Type::INT64, parquet::ConvertedType::NONE));
+		std::unique_ptr<parquet::arrow::FileWriter> m_pParquetWriter;
+
+		m_Builder.compression(parquet::Compression::SNAPPY)->created_by("VINOTH");
+
+		m_parquetSchema = std::static_pointer_cast<parquet::schema::GroupNode>(parquet::schema::GroupNode::Make(std::string("data_schema"), parquet::Repetition::REQUIRED, m_Fields));
+		m_Props = m_Builder.build();
+
+		parquet::SchemaDescriptor descriptor;
+        descriptor.Init(m_parquetSchema);
+        std::shared_ptr<arrow::Schema> arrow_schema;
+        parquet::ArrowReaderProperties props;
+
+        parquet::arrow::FromParquetSchema(&descriptor, props, &arrow_schema);
+
+		auto outStream = ::arrow::io::FileOutputStream::Open(outputPath, false);
+        auto pWriter = parquet::ParquetFileWriter::Open(outStream.ValueOrDie(), m_parquetSchema, m_Props);
+
+		// 		std::shared_ptr<HdfsOutputStream> outStream;
+		// PARQUET_THROW_NOT_OK(hadoopFileSysObj->OpenWritable(outputPath, false, &outStream));
+
+		
+		PARQUET_THROW_NOT_OK(parquet::arrow::FileWriter::Make(arrow::default_memory_pool(), std::move(pWriter), arrow_schema,
+                                         parquet::default_arrow_writer_properties(), &m_pParquetWriter));
+
+		m_pParquetWriter->NewRowGroup(100);
+
+		 std::shared_ptr<arrow::Array> pArray;//V6P
+		//m_pParquetWriter->WriteColumnChunk(*pArray);
+
+		m_pParquetWriter->Close();
+
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << e.what() << '\n';
+	}
+}
+
+
+void writeFileInLocalUsingFileWriter(const string &strInputPath, const string &outputDirectory,const string &strOutputPath, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
+{
+	try
+	{
+		using namespace arrow::io;
+		using namespace arrow;
+
+		//Read and write to different path
+
+		std::shared_ptr<HdfsReadableFile> file;
+		PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &file));
+
+		int64_t file_size = file->GetSize().ValueOrDie();
+
+		
+
+
+		const std::string outputPath = outputDirectory + "/" + strOutputPath;
+
+		std::cout << outputPath << std::endl;
+
+		std::shared_ptr<parquet::schema::GroupNode> m_parquetSchema;
+		std::shared_ptr<parquet::WriterProperties> m_Props;
+		parquet::WriterProperties::Builder m_Builder;
+		parquet::schema::NodeVector m_Fields;
+		parquet::Repetition::type repetition =  parquet::Repetition::REQUIRED;
+		m_Fields.push_back(parquet::schema::PrimitiveNode::Make("MY_INT_COLUMN", repetition, parquet::Type::INT64, parquet::ConvertedType::NONE));
+		std::unique_ptr<parquet::arrow::FileWriter> m_pParquetWriter;
+
+		m_Builder.compression(parquet::Compression::SNAPPY)->created_by("VINOTH");
+
+		m_parquetSchema = std::static_pointer_cast<parquet::schema::GroupNode>(parquet::schema::GroupNode::Make(std::string("data_schema"), parquet::Repetition::REQUIRED, m_Fields));
+		m_Props = m_Builder.build();
+
+		parquet::SchemaDescriptor descriptor;
+        descriptor.Init(m_parquetSchema);
+        std::shared_ptr<arrow::Schema> arrow_schema;
+        parquet::ArrowReaderProperties props;
+
+        parquet::arrow::FromParquetSchema(&descriptor, props, &arrow_schema);
+
+		auto outStream = ::arrow::io::FileOutputStream::Open(outputPath, false);
+        auto pWriter = parquet::ParquetFileWriter::Open(outStream.ValueOrDie(), m_parquetSchema, m_Props);
+		
+		PARQUET_THROW_NOT_OK(parquet::arrow::FileWriter::Make(arrow::default_memory_pool(), std::move(pWriter), arrow_schema,
+                                         parquet::default_arrow_writer_properties(), &m_pParquetWriter));
+
+		m_pParquetWriter->NewRowGroup(100);
+
+		 std::shared_ptr<arrow::Array> pArray;//V6P
+		//m_pParquetWriter->WriteColumnChunk(*pArray);
+
+		m_pParquetWriter->Close();
+
+	}
+	catch (const std::exception &e)
+	{
+		std::cout << e.what() << '\n';
+	}
+}
+
+void writeFileInAdlsG2UsingOpenWriteable(const string &strInputPath, const string &outputDirectory,const string& outputFileName, std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFileSysObj)
+{
+	try
+	{
+		using namespace arrow::io;
+		using namespace arrow;
+
+		//Read and write to different path
+
+		std::shared_ptr<ReadableFile> file;
+		file = ReadableFile::Open(strInputPath).ValueOrDie();
+
+
+
+
+		int64_t file_size = file->GetSize().ValueOrDie();
+		
+
 		//Check Directory exists or not
 		if (!hadoopFileSysObj->Exists(outputDirectory))
 		{
@@ -67,8 +199,8 @@ void writeFileInAdlsG2(const string &strInputPath, const string &outputDirectory
 			}
 		}
 
-		const string filename = "test_parquet_file.parquet";
-		const std::string outputPath = outputDirectory + "/" + filename;
+		
+		const std::string outputPath = outputDirectory + "/" + outputFileName;
 
 		std::cout << outputPath << std::endl;
 
@@ -292,6 +424,9 @@ void initAdlsConnection(std::shared_ptr<arrow::io::HadoopFileSystem> &hadoopFile
 	arrow::io::HdfsConnectionConfig hdfsConConfig;
 	//V6P
 	//hdfsConConfig.host = "abfs://vinothUser@vinothStorageAccount.dfs.core.windows.net";
+	hdfsConConfig.host = "abfs://aggparquet@inmemorygen2v2.dfs.core.windows.net";
+	//hdfsConConfig.host = "abfs://cip@testfrommsgen2.dfs.core.windows.net";
+	//hdfsConConfig.host = "abfss://cip@buycsusnprodsiinput.dfs.core.windows.net";
 	hdfsConConfig.user = ""; //User name is not required since we passed in host
 	hdfsConConfig.port = 0;
 	//V6P hdfsConConfig.driver = arrow::io::HdfsDriver::LIBHDFS; // JNI Driver
@@ -306,10 +441,18 @@ int main()
 	initAdlsConnection(hadoopFileSysObj);
 	//V6P
 	//string path = "/path/without/prefix/MyParquet.parquet";
+	string path = "/user/warehouse/tprid=1000/cochid=USCHVW/bucketid=1/vpdw_causal_datawarehouse_1000_USCHVW_1.parquet";
 
 	//readFileInAdlsG2(path, hadoopFileSysObj);
 	//readusingChunkedArray(path, hadoopFileSysObj);
 	//listFileInDirectory("/user/", hadoopFileSysObj);
 
-	writeFileInAdlsG2(path, "/user/", hadoopFileSysObj);
+	writeFileInAdlsG2UsingOpenWriteable("/RMS/nrsp/vinoth/sourceCode/v6AggMaster/apollo/apollo/cpp/test/data/parquetfiles/unitTestData_01.parquet", "/v6Test/fg_nspmigl1_1053551.db/trag_aggregated_data/agd_tpr_id=840/","unitTestData_01.parquet", hadoopFileSysObj);
+
+	//V6PWIP	
+	//writeFileInLocalUsingFileWriter(path, "/RMS/data/","test_parquet_file3.parquet", hadoopFileSysObj);
+	//V6PWIP
+	//writeFileInGen2UsingFileWriter(path, "/fg_nspmigl1_1053551.db/trag_aggregated_data/agd_tpr_id=840/","test_parquet_file3.parquet", hadoopFileSysObj);
+
+	
 }
