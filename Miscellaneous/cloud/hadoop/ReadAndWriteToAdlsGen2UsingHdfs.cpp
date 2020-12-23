@@ -51,15 +51,6 @@ void writeFileInGen2UsingFileWriter(const string &strInputPath, const string &ou
 		using namespace arrow::io;
 		using namespace arrow;
 
-		//Read and write to different path
-
-		//std::shared_ptr<HdfsReadableFile> file;
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
-		//PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &file));
-
-		//int64_t file_size = file->GetSize().ValueOrDie();
-
-		
 
 
 		const std::string outputPath = outputDirectory + "/" + strOutputPath;
@@ -271,6 +262,23 @@ void listFileInDirectory(const string &directoryPath, std::shared_ptr<arrow::fs:
 		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
 		//Status st = hadoopFileSysObj->ListDirectory(directoryPath, &children);
 
+		arrow::fs::FileSelector fileSelector;
+		fileSelector.base_dir=directoryPath;
+		fileSelector.recursive=true;
+		fileSelector.max_recursion=1;
+
+		std::vector<arrow::fs::FileInfo> fileInfoVec = hadoopFileSysObj->GetFileInfo(fileSelector).ValueOrDie();
+
+		for(auto fileInfo : fileInfoVec)
+		{	
+			std::cout << "File/Directory Name: " << fileInfo.base_name() <<'\n';
+			std::cout << "Directory: " << fileInfo.dir_name() <<'\n';
+		}
+		
+		return;
+
+		//V6P Clear downward code
+		
 		std::vector<std::string> fileList;
 		//PARQUET_THROW_NOT_OK(hadoopFileSysObj->GetChildren(directoryPath, &fileList));
 
@@ -439,7 +447,7 @@ void initAdlsConnection(std::shared_ptr<arrow::fs::HadoopFileSystem> &hadoopFile
 	//V6P
 	//hdfsOptionsObj.connection_config.host = "abfs://vinothUser@vinothStorageAccount.dfs.core.windows.net";
 	
-	
+
 	hdfsOptionsObj.connection_config.user = ""; //User name is not required since we passed in host
 	hdfsOptionsObj.connection_config.port = 0;
 	//V6P hdfsConConfig.driver = arrow::io::HdfsDriver::LIBHDFS; // JNI Driver
@@ -462,9 +470,11 @@ int main()
 	// string strLocalPath="/vinoth/dir/";
 
 
+
+
 	//readFileInAdlsG2(path, hadoopFileSysObj);
 	//readusingChunkedArray(path, hadoopFileSysObj);
-	//listFileInDirectory("/user/", hadoopFileSysObj);
+	listFileInDirectory("/v6Test/", hadoopFileSysObj);
 
 	// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
 	//writeFileInAdlsG2UsingOpenWriteable(localParquetFilePath, outputPath,outputFileName, hadoopFileSysObj);
@@ -472,5 +482,5 @@ int main()
 	//V6PWIP	
 	//writeFileInLocalUsingFileWriter(path, strLocalPath,outputFileName, hadoopFileSysObj);
 	//V6PWIP
-	writeFileInGen2UsingFileWriter(path, outputPath,outputFileName, hadoopFileSysObj);
+	//writeFileInGen2UsingFileWriter(path, outputPath,outputFileName, hadoopFileSysObj);
 }
