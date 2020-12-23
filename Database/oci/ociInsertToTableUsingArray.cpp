@@ -106,25 +106,29 @@ int OCIConnection::connectToDb()
 
 int OCIConnection::insertToTable()
 {
-    const int ROW_COUNT = 9;
-    const int COLUMN_COUNT = 9;
+    const int ROW_COUNT = 5;
     OCIStmt *stmthp = (OCIStmt *)0;
     OCIBind *ociBind = (OCIBind *)0;
 
-    short indicatorForColumn1[COLUMN_COUNT]; /* indicators */
-    ub4 LegthForColumn1[COLUMN_COUNT];       /* return lengths */
-    ub2 returnCodeForColumn1[COLUMN_COUNT];  /* return codes */
+    sb2 indicatorForColumn1[ROW_COUNT]={-1,0,0}; /* indicators - passing value as -1, inserts null for row*/ 
+    ub4 LegthForColumn1[ROW_COUNT]={0};       /* return lengths */
+    ub2 returnCodeForColumn1[ROW_COUNT]={0};  /* return codes */
 
-    char buffer[ROW_COUNT][100] = {};
+    char strBuffer[ROW_COUNT][100] = {};
+    int intBuffer[ROW_COUNT] = {};
+    double doubleBuffer[ROW_COUNT] = {};
 
     //int buffer[ROW_COUNT]={100};
 
-    strcpy(buffer[0], "PAVAN KARTHI GV");
-    strcpy(buffer[1], "VINOTH KUMAR GANESAN");
-    strcpy(buffer[2], "KIRUBA SUBRAMANI");
-
-    static text *insertstr = (text *)"INSERT INTO V6Play (MyVarchar) VALUES (:1)";
-    //static text *insertstr = (text *)"INSERT INTO V6Play (MyNumber) VALUES (:1)";
+    for(int i=0;i<ROW_COUNT;i++)
+    {
+        strcpy(strBuffer[i], string("STR_COLUMN_"+to_string(i)).c_str());
+        intBuffer[i]=i;
+        doubleBuffer[i]=2+0.89;
+    }
+        
+    static text *insertstr = (text *)"INSERT INTO V6Play1 (MyVarchar,MyNumber,MyNumber2) VALUES (:1,:2,:3)";
+    //static text *insertstr = (text *)"INSERT INTO V6Play1 (MyNumber) VALUES (:1)";
 
     //Allocate session handle
     IS_ERROR(pOciErrorHandle, OCIHandleAlloc((dvoid *)pOciEnv, (dvoid **)&stmthp, (ub4)OCI_HTYPE_STMT, (size_t)0, (dvoid **)0));
@@ -134,20 +138,33 @@ int OCIConnection::insertToTable()
                                              (ub4)OCI_NTV_SYNTAX, (ub4)OCI_DEFAULT));
 
 
-    IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 1, buffer[0],
-                                           sizeof(buffer[0]), SQLT_STR,
-                                           (void *)indicatorForColumn1, (ub2 *)0, (ub2 *)returnCodeForColumn1, 0,
+    IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 1, strBuffer[0],
+                                           sizeof(strBuffer[0]), SQLT_STR,
+                                           indicatorForColumn1, NULL, NULL, 0,
+                                           (ub4 *)0, OCI_DEFAULT));
+    
+    IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 2, intBuffer,
+                                           sizeof(intBuffer[0]), SQLT_INT,
+                                           NULL, NULL, NULL, 0,
+                                           (ub4 *)0, OCI_DEFAULT));
+    
+    IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 3, doubleBuffer,
+                                           sizeof(doubleBuffer[0]), SQLT_FLT,
+                                           NULL, NULL, NULL, 0,
                                            (ub4 *)0, OCI_DEFAULT));
 
     // IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 1, &buffer[0],
     //                                        sizeof(buffer[0]), SQLT_INT ,
-    //                                        (ub2 *)0, (ub2 *)0, (ub2 *)0, 0,
+    //                                        indicatorForColumn1, (ub2 *)0, (ub2 *)0, 0,
     //                                        (ub4 *)0, OCI_DEFAULT));
 
     //OCIBindArrayOfStruct(ociBind, pOciErrorHandle, sizeof(int),indicatorForColumn1[0], LegthForColumn1[0], returnCodeForColumn1[0]);
 
     IS_ERROR(pOciErrorHandle, OCIStmtExecute(pOciServiceContextHandle, stmthp, pOciErrorHandle, ROW_COUNT, 0,
-                                             (OCISnapshot *)0, (OCISnapshot *)0, OCI_COMMIT_ON_SUCCESS));
+                                             (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT));
+
+
+    IS_ERROR(pOciErrorHandle,OCITransCommit (pOciServiceContextHandle,pOciErrorHandle,OCI_DEFAULT));
 
     return 0;
 }
