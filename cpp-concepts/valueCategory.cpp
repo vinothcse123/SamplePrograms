@@ -6,15 +6,27 @@ using std::vector;
 using std::cout;
 using std::string;
 
+void myFunction(int a)
+{
+}
+
 void lvalueCategory()
 {
+    
+    
+    // List of Lvalue Category
     int a=10;
     
 }
 
 void rvalueCategory()
 {
-    //myFunction(10);
+    int a;
+    
+    // List of Rvalue Category
+    
+    myFunction(10);
+    myFunction(move(a));
     
 }
 
