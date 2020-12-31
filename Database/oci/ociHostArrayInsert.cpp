@@ -1,4 +1,4 @@
-
+//GH_DB_ORA_1
 //g++ $1 -std=c++11 -I $ORACLE_HOME/rdbms/public/ -L $ORACLE_HOME/lib/  -lclntsh
 
 #include <iostream>
@@ -110,13 +110,14 @@ int OCIConnection::insertToTable()
     OCIStmt *stmthp = (OCIStmt *)0;
     OCIBind *ociBind = (OCIBind *)0;
 
-    sb2 indicatorForColumn1[ROW_COUNT]={-1,0,0}; /* indicators - passing value as -1, inserts null for row*/ 
-    ub4 LegthForColumn1[ROW_COUNT]={0};       /* return lengths */
+    sb2 indicatorForColumn1[ROW_COUNT]={-1,0,0}; /* indicators - passing value as -1, inserts null for row*/  
+    ub2 LegthForColumn1[ROW_COUNT]={3};       /* return lengths */
     ub2 returnCodeForColumn1[ROW_COUNT]={0};  /* return codes */
 
     char strBuffer[ROW_COUNT][100] = {};
     int intBuffer[ROW_COUNT] = {};
     double doubleBuffer[ROW_COUNT] = {};
+    char dateBuffer[ROW_COUNT][100] = {"27-JUN-2020","29-AUG-1992"};
 
     //int buffer[ROW_COUNT]={100};
 
@@ -127,7 +128,7 @@ int OCIConnection::insertToTable()
         doubleBuffer[i]=2+0.89;
     }
         
-    static text *insertstr = (text *)"INSERT INTO V6Play1 (MyVarchar,MyNumber,MyNumber2) VALUES (:1,:2,:3)";
+    static text *insertstr = (text *)"INSERT INTO V6Play (MyVarchar,MyNumber,MyNumber2,MyDate) VALUES (:1,:2,:3,:4)";
     //static text *insertstr = (text *)"INSERT INTO V6Play1 (MyNumber) VALUES (:1)";
 
     //Allocate session handle
@@ -150,6 +151,11 @@ int OCIConnection::insertToTable()
     
     IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 3, doubleBuffer,
                                            sizeof(doubleBuffer[0]), SQLT_FLT,
+                                           NULL, NULL, NULL, 0,
+                                           (ub4 *)0, OCI_DEFAULT));
+
+    IS_ERROR(pOciErrorHandle, OCIBindByPos(stmthp, &ociBind, pOciErrorHandle, 4, dateBuffer,
+                                           sizeof(dateBuffer[0]), SQLT_STR,
                                            NULL, NULL, NULL, 0,
                                            (ub4 *)0, OCI_DEFAULT));
 
