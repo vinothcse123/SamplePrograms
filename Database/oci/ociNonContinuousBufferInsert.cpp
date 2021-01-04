@@ -236,6 +236,14 @@ int OCIConnection::insertToTable()
                                              (OCISnapshot *)0, (OCISnapshot *)0, OCI_DEFAULT));
 
 
+    int rowsLoaded =-1;
+
+    OCIAttrGet( stmthp, OCI_HTYPE_STMT, (void*)&rowsLoaded, NULL, OCI_ATTR_ROWS_FETCHED, pOciErrorHandle );
+
+    std::cout << " \n==============V6P: rowsLoaded :  "<<  rowsLoaded  << " ==================" << std::endl;
+
+
+
     IS_ERROR(pOciErrorHandle,OCITransCommit (pOciServiceContextHandle,pOciErrorHandle,OCI_DEFAULT));
 
     return 0;
