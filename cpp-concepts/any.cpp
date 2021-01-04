@@ -25,6 +25,9 @@ int main()
 
     for (auto x : std::any_cast<vector<int>>(a))
         cout << "Result :" << x << '\n';
+    
+    //Taking reference
+    vector<int> &referenceToVec = std::any_cast< vector<int>& >(a);
 
     return 0;
 }
