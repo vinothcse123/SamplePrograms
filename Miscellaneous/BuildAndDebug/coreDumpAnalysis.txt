@@ -1,3 +1,10 @@
 #python core dump
 
 gdb python3 coreFile
+
+
+#CoreFile not generating
+ulimit -c unlimited
+
+#Disable core generation
+ulimit -c 0
