@@ -9,3 +9,6 @@ gdb --args ./myProgram arg1 arg2
 #Run default commands at startup
 gdb -x v6gdbInit.gdb --args ./myProgram arg1 arg2
 
+#Python core dump analysis
+gdb python3 coreFile
+
