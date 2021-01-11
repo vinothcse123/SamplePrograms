@@ -1,0 +1,3 @@
+#python core dump
+
+gdb python3 coreFile
