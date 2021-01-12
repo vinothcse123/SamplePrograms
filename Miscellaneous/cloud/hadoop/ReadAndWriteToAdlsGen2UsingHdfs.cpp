@@ -1,3 +1,5 @@
+//GH_MISC_1
+
 #include <iostream>
 #include <string>
 
