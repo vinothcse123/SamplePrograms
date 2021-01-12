@@ -7,7 +7,10 @@
 #include <parquet/exception.h>
 #include <iostream>
 #include <string>
+#include <arrow/type_fwd.h>
+
 using namespace std;
+
 int main()
 {
     std::shared_ptr<arrow::io::ReadableFile> infile;
@@ -34,24 +37,64 @@ int main()
     pFileReader->GetSchema(&arrowSchemaPtr);
     for (auto i = 0; i < arrowSchemaPtr->num_fields(); i++)
     {
-        std::cout << "FieldName " << arrowSchemaPtr->field(i)->name() << std::endl;
+        //std::cout << "FieldName " << arrowSchemaPtr->field(i)->name() << std::endl;
+        //std::cout << "Type: " << arrowSchemaPtr->field(i)->type()->id() << std::endl;
+
+        //arrow::Type::type myType=arrow::Type::INT64;
     }
 
     std::shared_ptr<parquet::arrow::RowGroupReader> rgReader = pFileReader->RowGroup(0);
     std::shared_ptr<parquet::arrow::ColumnChunkReader> colReaderVec;
-    colReaderVec = rgReader->Column(1);
+    for (int32_t dwColIdx = 0; dwColIdx < arrowSchemaPtr->num_fields(); dwColIdx++)
+    {
+        colReaderVec = rgReader->Column(dwColIdx);
 
-    std::shared_ptr<arrow::ChunkedArray> ChunkedArray;
-    colReaderVec->Read(&ChunkedArray);
-    std::cout << " \n Number of rows read " << ChunkedArray->length() << std::endl;
+        std::shared_ptr<arrow::ChunkedArray> ChunkedArray;
+        colReaderVec->Read(&ChunkedArray);
+       
 
-    std::shared_ptr<::arrow::Array> arrowArray = ChunkedArray->chunk(0);
+        std::shared_ptr<::arrow::Array> arrowArray;
+        
+        
 
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[0]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[1]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[2]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[3]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[4]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[5]) << std::endl;
-    std::cout << "value " << (arrowArray->data()->GetMutableValues<int64_t>(1)[7]) << std::endl;
+        arrow::Type::type colType = arrowSchemaPtr->field(dwColIdx)->type()->id();
+        const string &strColName = arrowSchemaPtr->field(dwColIdx)->name();
+        const uint32_t dwNumberOfRows = ChunkedArray->length();
+        int32_t dwElementSize = 100;
+
+        arrowArray= std::move(ChunkedArray->chunk(0));//V6P-Handle multiple chunks.
+
+
+         //std::cout << " \n Number of rows read " << ChunkedArray->length() << std::endl;
+          //std::cout << " \n ColType " << colType << std::endl;
+
+          std::cout << strColName << " : ";
+
+        for (int i = 0; i < arrowArray->length(); i++)
+        {
+            switch(colType)
+            {
+                case arrow::Type::INT64:
+                    std::cout   << (arrowArray->data()->GetMutableValues<int64_t>(1)[i]) <<",";
+                break;
+
+                case arrow::Type::DOUBLE:
+                    std::cout  << (arrowArray->data()->GetMutableValues<double>(1)[i]) <<"," ;
+                break;
+
+                case arrow::Type::STRING:
+                    //1st Pos - Size of string
+                    //2nd in array - Value of string 
+                    
+                    //V6P - optimize reading part
+
+                    uint8_t* valuePtr=arrowArray->data()->GetMutableValues<uint8_t>(2) + arrowArray->data()->GetValues<int32_t>(1)[i];
+                    std::cout  << string( (const char*)valuePtr  , arrowArray->data()->GetValues<int32_t>(1)[i+1] - arrowArray->data()->GetValues<int32_t>(1)[i] ) <<"," ;
+                break;
+            }
+        }
+
+
+        std::cout << '\n';
+    }
 }
