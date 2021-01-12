@@ -1,5 +1,13 @@
 //GH_MISC_1
 
+
+/*
+
+source scl_source enable devtoolset-9
+g++ -g $1 -std=c++17 -pthread -larrow -lparquet  -I/RMS/nrsp/vinoth/sourceCode/v6AggMaster/nrsp/ndx-common-cpp/libs/parquet/include/ -L/RMS/nrsp/vinoth/sourceCode/v6AggMaster/nrsp/ndx-common-cpp/libs/parquet/lib
+  
+*/
+
 #include <iostream>
 #include <string>
 
@@ -449,6 +457,10 @@ void initAdlsConnection(std::shared_ptr<arrow::fs::HadoopFileSystem> &hadoopFile
 	//V6P
 	//hdfsOptionsObj.connection_config.host = "abfs://vinothUser@vinothStorageAccount.dfs.core.windows.net";
 	
+	hdfsOptionsObj.connection_config.host = "abfs://aggparquet@inmemorygen2v2.dfs.core.windows.net";
+	//hdfsOptionsObj.connection_config.host = "abfs://cip@testfrommsgen2.dfs.core.windows.net";
+	//hdfsOptionsObj.connection_config.host = "abfss://cip@buycsusnprodsiinput.dfs.core.windows.net";
+
 
 	hdfsOptionsObj.connection_config.user = ""; //User name is not required since we passed in host
 	hdfsOptionsObj.connection_config.port = 0;
@@ -470,7 +482,6 @@ int main()
 	// string outputPath="/path/";
 	// string localParquetFilePath="parquetfiles/unitTestData_01.parquet";
 	// string strLocalPath="/vinoth/dir/";
-
 
 
 
