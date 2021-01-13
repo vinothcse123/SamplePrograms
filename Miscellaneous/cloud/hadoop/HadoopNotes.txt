@@ -1,0 +1,2 @@
+1. Path of core site
+/hadoop-3.2.1/etc/hadoop
