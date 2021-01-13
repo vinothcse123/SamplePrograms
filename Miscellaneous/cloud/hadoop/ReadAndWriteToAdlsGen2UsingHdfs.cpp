@@ -4,7 +4,7 @@
 /*
 
 source scl_source enable devtoolset-9
-g++ -g $1 -std=c++17 -pthread -larrow -lparquet  -I/RMS/nrsp/vinoth/sourceCode/v6AggMaster/nrsp/ndx-common-cpp/libs/parquet/include/ -L/RMS/nrsp/vinoth/sourceCode/v6AggMaster/nrsp/ndx-common-cpp/libs/parquet/lib
+g++ -g $1 -std=c++17 -pthread -larrow -lparquet  -Iparquet/include/ -Lparquet/lib
   
 */
 
