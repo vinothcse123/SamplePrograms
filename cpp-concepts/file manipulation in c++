@@ -7,7 +7,7 @@ int main()
    char buffer_char[100];
    string buffer_string;
 
-   /* Open a file and read it*/
+   /********** H1:Open a file and read it *************/
 
    ifstream file_obj;
 
@@ -63,11 +63,13 @@ int main()
 
 
 
-      /* Write to file*/
+     /********** H2:write to file and read it *************/
 
       ofstream file_os_obj("file1.txt");
 
       file_os_obj.write("HAI I have changed the content of file !!!",30);
+
+      file_os_obj << "Hello";
 
       file_os_obj.close();
 
