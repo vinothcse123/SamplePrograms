@@ -95,7 +95,7 @@ void writeFileInGen2UsingFileWriter(const string &strInputPath, const string &ou
         auto pWriter = parquet::ParquetFileWriter::Open(outStream.ValueOrDie(), m_parquetSchema, m_Props);
 
 		
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
+		// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 		// 		std::shared_ptr<HdfsOutputStream> outStream;
 		// PARQUET_THROW_NOT_OK(hadoopFileSysObj->OpenWritable(outputPath, false, &outStream));
 
@@ -128,7 +128,7 @@ void writeFileInLocalUsingFileWriter(const string &strInputPath, const string &o
 		//Read and write to different path
 
 		std::shared_ptr<HdfsReadableFile> file;
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
+		// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 		//PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &file));
 
 		int64_t file_size = file->GetSize().ValueOrDie();
@@ -201,7 +201,7 @@ void writeFileInAdlsG2UsingOpenWriteable(const string &strInputPath, const strin
 		//Check Directory exists or not
 		//if (!hadoopFileSysObj->Exists(outputDirectory))
 		{
-			// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
+			// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 			//if (!hadoopFileSysObj->MakeDirectory(outputDirectory).ok())
 			{
 				std::cout << "Unable to create Directory " << std::endl;
@@ -269,7 +269,7 @@ void listFileInDirectory(const string &directoryPath, std::shared_ptr<arrow::fs:
 		using namespace arrow;
 
 		std::vector<io::HdfsPathInfo> children;
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
+		// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 		//Status st = hadoopFileSysObj->ListDirectory(directoryPath, &children);
 
 		arrow::fs::FileSelector fileSelector;
@@ -342,9 +342,9 @@ void readusingChunkedArray(const string &strInputPath, std::shared_ptr<arrow::fs
 
 		//Read and write to different path
 
-		std::shared_ptr<HdfsReadableFile> infile;
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
-		//PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &infile));
+		std::shared_ptr<RandomAccessFile> infile;
+
+		infile = hadoopFileSysObj->OpenInputFile(strInputPath).ValueOrDie();
 
 		int64_t file_size = infile->GetSize().ValueOrDie();
 
@@ -393,6 +393,7 @@ void readusingChunkedArray(const string &strInputPath, std::shared_ptr<arrow::fs
 	}
 }
 
+//V6P-WIP : This works but takes long time to load the data. Not sure on root cause.
 void readFileInAdlsG2(const string &strInputPath, std::shared_ptr<arrow::fs::HadoopFileSystem> &hadoopFileSysObj)
 {
 	try
@@ -406,12 +407,13 @@ void readFileInAdlsG2(const string &strInputPath, std::shared_ptr<arrow::fs::Had
 		//Read and write to different path
 
 		std::shared_ptr<io::RandomAccessFile> file;
-		// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
-		//PARQUET_THROW_NOT_OK((*(hadoopFileSysObj)).OpenReadable(strInputPath, &file));
 
 		file = hadoopFileSysObj->OpenInputFile(strInputPath).ValueOrDie();
 
 		int64_t file_size = file->GetSize().ValueOrDie();
+
+		std::cout << " \n==============V6P: file_size "<<  file_size  << "==================" << std::endl;
+
 
 		std::unique_ptr<parquet::arrow::FileReader> reader;
 		PARQUET_THROW_NOT_OK(
@@ -486,10 +488,10 @@ int main()
 
 
 	//readFileInAdlsG2(path, hadoopFileSysObj);
-	//readusingChunkedArray(path, hadoopFileSysObj);
-	listFileInDirectory("/v6Test/", hadoopFileSysObj);
+	readusingChunkedArray(path, hadoopFileSysObj); //Works with arrow::fs
+	//listFileInDirectory("/v6Test/", hadoopFileSysObj);
 
-	// V6P: This is coded with customized api which is wrote on top of hdfs Arrow integration. This need to be migrated to standard api in hdfs fs namespace
+	// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 	//writeFileInAdlsG2UsingOpenWriteable(localParquetFilePath, outputPath,outputFileName, hadoopFileSysObj);
 
 	//V6PWIP	
