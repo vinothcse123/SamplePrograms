@@ -1,8 +1,11 @@
+//GH_CPP_CON_5
+
 #include<iostream>
 #include<cstdio>
 #include<ctime> // In c it is <time.h>
 
-int main()
+
+void getCurrentTimeAndAlterTime()
 {
    using namespace std;
 
@@ -11,7 +14,7 @@ int main()
    char formatted_time[25];
 
    time(&last_connect_time);
-// -1 will be returned if not able to fetch caledar time
+   // -1 will be returned if not able to fetch caledar time
    sleep(1);
    current_time=time(0); // This is similar to time(&current_time)
    printf("\n DIFFERENCE TIME IN SECONDS  :: %f ", difftime(current_time,last_connect_time) );
@@ -31,6 +34,12 @@ int main()
    printf("\n asctime       :: %s ",     asctime(time_struct)     );
    strftime(formatted_time,sizeof(formatted_time),"%d-%b-%y",time_struct);
    printf("\n formatted_time:: %s ", formatted_time );
+
+}
+
+int main()
+{
+   getCurrentTimeAndAlterTime();
 
 
    return 0;
