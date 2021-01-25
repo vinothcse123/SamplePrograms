@@ -3,11 +3,24 @@
 #include <thread>
 #include <iostream>
 #include <future>
+#include <mutex>
+
+std::mutex g_mutex;
+int g_int=10;
 
 void threadModule(int myInput)
 {
     std::cout << "Thread Id: " << std::this_thread::get_id() << std::endl;
     std::cout << "Input: " << myInput << std::endl;
+    
+    {
+        std::scoped_lock<std::mutex> lck(g_mutex);
+        g_int=20;
+    }
+    
+    
+    
+    
 }
 
 int threadModuleWithReturn(int myInput)
