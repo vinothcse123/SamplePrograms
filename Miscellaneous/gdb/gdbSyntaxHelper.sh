@@ -17,3 +17,9 @@ gdb python3 coreFile
 info threads
 
 
+#Backtrace of all threads
+thread apply all backtrace
+
+#Catch exception
+catch throw
+
