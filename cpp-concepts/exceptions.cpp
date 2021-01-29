@@ -1,3 +1,5 @@
+//GH_CPP_CON_8
+
 #include<iostream>
 #include <exception>
 
@@ -11,9 +13,8 @@ class Divide_by_zero : public std::exception
       }
 };
 
-int main()
+void userDefinedException()
 {
-   using namespace std;
    Divide_by_zero d;
 
    try
@@ -25,6 +26,14 @@ int main()
    {
       printf("\nException Caught :: %s",e.what());
    }
+}
+
+using namespace std;
+
+int main()
+{
+   
+   userDefinedException();
 
 
 
