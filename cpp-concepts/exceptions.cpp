@@ -134,14 +134,44 @@ void exceptionInCondWaitThreads()
 
 }
 
+void passExceptionToFuncOrThread(std::exception_ptr exceptionPtr)
+{
+    try
+    {
+        if(exceptionPtr)
+             std::rethrow_exception(exceptionPtr);
+    }
+    catch(const char* e)
+    {
+        std::cerr << e << '\n';
+    }
+        
+}
+
+void captureAndRethrowException()
+{
+    std::exception_ptr exceptionPtr;
+
+    try
+    {
+        throw "My Exception";
+    }
+    catch(const char* e)
+    {
+        exceptionPtr = std::current_exception();
+    }
+
+    passExceptionToFuncOrThread(exceptionPtr);
+}
+
 
 int main()
 {
-   
-   //userDefinedException();
+
+    //userDefinedException();
     //exceptionInThreads();
-    exceptionInCondWaitThreads();
+    //exceptionInCondWaitThreads();
+    captureAndRethrowException();
 
-
-   return 0;
+    return 0;
 }
