@@ -54,6 +54,7 @@ With name as "fs.azure.account.auth.type.vinoth.dfs.core.windows.net"
 
 */
 
+//V6P- WIP - Writing empty parquet file works, but writing content is missing.
 void writeFileInGen2UsingFileWriter(const string &strInputPath, const string &outputDirectory,const string &strOutputPath, std::shared_ptr<arrow::fs::HadoopFileSystem> &hadoopFileSysObj)
 {
 	try
@@ -95,18 +96,13 @@ void writeFileInGen2UsingFileWriter(const string &strInputPath, const string &ou
         auto pWriter = parquet::ParquetFileWriter::Open(outStream.ValueOrDie(), m_parquetSchema, m_Props);
 
 		
-		// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
-		// 		std::shared_ptr<HdfsOutputStream> outStream;
-		// PARQUET_THROW_NOT_OK(hadoopFileSysObj->OpenWritable(outputPath, false, &outStream));
-
-		
 		PARQUET_THROW_NOT_OK(parquet::arrow::FileWriter::Make(arrow::default_memory_pool(), std::move(pWriter), arrow_schema,
                                          parquet::default_arrow_writer_properties(), &m_pParquetWriter));
 
 		m_pParquetWriter->NewRowGroup(100);
 
-		 std::shared_ptr<arrow::Array> pArray;//V6P
-		//m_pParquetWriter->WriteColumnChunk(*pArray);
+		std::shared_ptr<arrow::Array> pArray;
+		m_pParquetWriter->WriteColumnChunk(*pArray);
 
 		m_pParquetWriter->Close();
 
@@ -275,7 +271,7 @@ void listFileInDirectory(const string &directoryPath, std::shared_ptr<arrow::fs:
 		arrow::fs::FileSelector fileSelector;
 		fileSelector.base_dir=directoryPath;
 		fileSelector.recursive=true;
-		fileSelector.max_recursion=1;
+		//fileSelector.max_recursion=1;
 
 		std::vector<arrow::fs::FileInfo> fileInfoVec = hadoopFileSysObj->GetFileInfo(fileSelector).ValueOrDie();
 
@@ -283,6 +279,8 @@ void listFileInDirectory(const string &directoryPath, std::shared_ptr<arrow::fs:
 		{	
 			std::cout << "File/Directory Name: " << fileInfo.base_name() <<'\n';
 			std::cout << "Directory: " << fileInfo.dir_name() <<'\n';
+			std::cout << "Path: " << fileInfo.path() <<'\n';
+			
 		}
 		
 		return;
@@ -459,7 +457,6 @@ void initAdlsConnection(std::shared_ptr<arrow::fs::HadoopFileSystem> &hadoopFile
 	//V6P
 	//hdfsOptionsObj.connection_config.host = "abfs://vinothUser@vinothStorageAccount.dfs.core.windows.net";
 	
-	hdfsOptionsObj.connection_config.host = "abfs://aggparquet@inmemorygen2v2.dfs.core.windows.net";
 	//hdfsOptionsObj.connection_config.host = "abfs://cip@testfrommsgen2.dfs.core.windows.net";
 	//hdfsOptionsObj.connection_config.host = "abfss://cip@buycsusnprodsiinput.dfs.core.windows.net";
 
@@ -488,14 +485,14 @@ int main()
 
 
 	//readFileInAdlsG2(path, hadoopFileSysObj);
-	readusingChunkedArray(path, hadoopFileSysObj); //Works with arrow::fs
-	//listFileInDirectory("/v6Test/", hadoopFileSysObj);
+	//readusingChunkedArray(path, hadoopFileSysObj); //Works with arrow::fs
+	listFileInDirectory("/v6Test/", hadoopFileSysObj);
 
 	// V6P: This is coded with arrow:io api . This need to be migrated to standard api in hdfs fs namespace
 	//writeFileInAdlsG2UsingOpenWriteable(localParquetFilePath, outputPath,outputFileName, hadoopFileSysObj);
 
 	//V6PWIP	
 	//writeFileInLocalUsingFileWriter(path, strLocalPath,outputFileName, hadoopFileSysObj);
-	//V6PWIP
+
 	//writeFileInGen2UsingFileWriter(path, outputPath,outputFileName, hadoopFileSysObj);
 }
