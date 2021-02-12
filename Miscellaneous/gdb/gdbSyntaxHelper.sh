@@ -12,6 +12,9 @@ gdb -x v6gdbInit.gdb --args ./myProgram arg1 arg2
 #Python core dump analysis
 gdb python3 coreFile
 
+#Python debugging
+gdb --args  python3 myPythonFile.py
+
 #Thread info 
 #Current active thread is marked as *.
 info threads
