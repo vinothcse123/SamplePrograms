@@ -26,3 +26,5 @@ thread apply all backtrace
 #Catch exception
 catch throw
 
+#Debug running process
+gdb -p <processId>
