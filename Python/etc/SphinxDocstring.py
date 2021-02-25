@@ -3,10 +3,10 @@ def myFunction():
     v6pDescription.
  
     Parameters:
-        query(str): Oracle query which is used for immediate execution. 
+        param1(str): parameterDescription. 
  
     Returns:
-        int: Identifier of the node
+        int: return value
         None
  
     Note:
@@ -14,10 +14,10 @@ def myFunction():
  
     Example:
         .. code-block:: python
-            createMyNode(1)
-            printNode(1)
+            print(1)
+            print(2)
  
-    Version : 21.2
+    Version : 1.1
   
 """
 print("Hello")
