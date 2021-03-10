@@ -28,3 +28,6 @@ catch throw
 
 #Debug running process
 gdb -p <processId>
+
+#Execute shell commands
+shell ./compile.ksh
