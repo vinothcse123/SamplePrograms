@@ -21,10 +21,14 @@ MyClass&& localTemporaryobjects()
     return std::move(obj);
 }
 
+void returningRvalueReference()
+{
+    localTemporaryobjects();
+}
 
 void rvalueReference()
 {
-    localTemporaryobjects();
+    returningRvalueReference();
 
 }
 
