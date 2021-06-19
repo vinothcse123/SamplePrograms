@@ -47,9 +47,9 @@ void rvalueCategory()
 
 int main()
 {
-    int myNumber=-1;
     lvalueCategory();
+    rvalueCategory()
+    
 
-    cout<< "Result :" << myNumber << '\n';	
     return 0;
 }
