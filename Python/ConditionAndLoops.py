@@ -22,6 +22,11 @@ for currVariable in range(1,5):
     print(currVariable,end = '') 
 print("\n")
 
+memoryUsageListKb=[10,20]
+ for curPeakMemKb in range(0,len(memoryUsageListKb)):
+    print(memoryUsageListKb[curPeakMemKb])
+
+
 for currVariable in range(1,10,2): #print odd numbers 
     print(currVariable,end = '') 
 print("\n")
