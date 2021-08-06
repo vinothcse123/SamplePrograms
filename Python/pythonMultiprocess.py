@@ -10,10 +10,14 @@ def myFunction(name):
 
 if __name__ == '__main__':
 
-    for i in range(0,4):
+    processList = []
+    for i in range(0,2):
         print("started ",i)
-        p = Process(target=myFunction, args=(i,))
+        p = Process(target=test1038)
+
         p.start()
+        processList.append(p)
     
     print("Waiting to join...")
-    p.join()
+    for p in processList:
+        p.join()
