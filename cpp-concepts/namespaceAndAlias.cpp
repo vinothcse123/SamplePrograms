@@ -11,25 +11,41 @@ namespace FirstLevelNamespace
        {
 
        };
+
+       template<class T>
+       class TemplateClass
+       {
+           T a;
+       };
     }
 }
 
-//Shorten access to namespace to use FirstLevelNamespace::SecondLevelNamespace::MyClass as SecondLevelNamespace::MyClass
+//H1:Shorten access to namespace to use FirstLevelNamespace::SecondLevelNamespace::MyClass as SecondLevelNamespace::MyClass
 
 namespace SecondLevelNamespace = FirstLevelNamespace::SecondLevelNamespace;
 
 
-//All objects of FirstLevelNamespace will be accessed here. This should be avoided in publically exposed API's because pollutes namespace
+//H2:All objects of FirstLevelNamespace will be accessed here. This should be avoided in publically exposed API's because pollutes namespace
 using namespace FirstLevelNamespace; 
 
 
-//Here MyClass alone imported from namespace
+//H3:Here MyClass alone imported from namespace
 using FirstLevelNamespace::SecondLevelNamespace::MyClass;
 
+//H4:Alias name for long class name
+using MyClassAlias = FirstLevelNamespace::SecondLevelNamespace::MyClass;
+
+
+//H5:Template alias
+template<class T>
+using MyTemplateClassAlias = FirstLevelNamespace::SecondLevelNamespace::TemplateClass<T>;
+
+MyTemplateClassAlias<int> myGlobalObj;
 
 int main()
 {
     int myNumber=-1;
+
 
 
 }
