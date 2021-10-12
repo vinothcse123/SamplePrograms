@@ -2,6 +2,22 @@
 
 #include <iostream>
 
+
+void arrayInitialization()
+{
+    //All initialized to zero
+    int *a=new int[10]();
+    int *b=new int[10]{};
+    std::cout << "a[0] = " << a[0] << std::endl;
+
+    //First two with 10,20 and rest all are 0
+    int *c=new int[10]{10,20};
+    std::cout << "c[0] = " << c[0] << std::endl;
+    std::cout << "c[3] = " << c[3] << std::endl;
+
+}
+
+
 void addressRelated()
 {
 
@@ -69,21 +85,23 @@ void multiDimArray()
 
     constexpr int32_t dwDim1Size = 10, dwDim2Size = 4, dwDim3Size = 5, dwDim4Size = 5;
 
-    multiDimArray = new double ***[dwDim1Size];
+    multiDimArray = new double ***[dwDim1Size]{};
 
     //Allocation of memory
 
     for (int i = 0; i < dwDim1Size; i++)
     {
-        multiDimArray[i] = new double **[dwDim2Size];
+        multiDimArray[i] = new double **[dwDim2Size]{};
 
         for (int j = 0; j < dwDim2Size; j++)
         {
-            multiDimArray[i][j] = new double *[dwDim3Size];
+            multiDimArray[i][j] = new double *[dwDim3Size]{};
 
             for (int k = 0; k < dwDim3Size; k++)
             {
-                multiDimArray[i][j][k] = new double[dwDim4Size];
+                multiDimArray[i][j][k] = new double[dwDim4Size]{10,20,39};
+                std::cout << multiDimArray[i][j][k][3] << " ";
+
             }
         }
     }
@@ -141,10 +159,11 @@ void multiDimArray()
 int main()
 {
     using namespace std;
-
+    
+    arrayInitialization();
     //addressRelated();
     //twoDimArray();
-    multiDimArray();
+    //multiDimArray();
 
     return 0;
 }
