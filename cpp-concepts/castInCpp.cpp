@@ -8,6 +8,7 @@ using std::cout;
 using std::shared_ptr;
 using std::string;
 using std::vector;
+using std::unique_ptr;
 
 #include <iostream>
 
@@ -58,9 +59,43 @@ void staticAndDynamicPointerCast()
 
     shared_ptr<DerivedClass> derivedClassPtrAsDynCast = std::dynamic_pointer_cast<DerivedClass>(baseSharedPtr);
 
+
+}
+
+void castingForInheritance()
+{
+    //Pointers
+
+    BaseClass *baseClass;
+
+    //It will just check the type
+    DerivedClass *derived=static_cast<DerivedClass*>(baseClass);
+
+    //Reference
+
+    BaseClass baseobj;
+
+    //It expects constructor of type DerivedClass(BaseClass&)
+    //DerivedClass &derivedObj=static_cast<DerivedClass>(baseobj);
+
+
+    //Unique pointer 
+
+    unique_ptr<BaseClass> basePtr(new DerivedClass(222));  
+
+    //Not allowed
+   //unique_ptr<DerivedClass> derivedPtr = static_cast< unique_ptr<DerivedClass> >(basePtr);   
+
+   //Not allowed, here  basePtr can point to any type of derived class
+   //DerivedClass &derivedClass = *basePtr;
+
+
+
+
 }
 
 int main()
 {
     staticAndDynamicPointerCast();
+    castingForInheritance();
 }
