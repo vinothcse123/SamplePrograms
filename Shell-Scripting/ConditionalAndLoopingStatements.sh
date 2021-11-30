@@ -72,10 +72,8 @@ do
         echo "$i"
 done
 
-for i in "core*"
-do 
-    echo $i
-done
+for i in `ls core*`; do echo $i; done
+
 
 end=5
 for ((i=1;i<=end;i++)); do
