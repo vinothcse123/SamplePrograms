@@ -31,3 +31,6 @@ gdb -p <processId>
 
 #Execute shell commands
 shell ./compile.ksh
+
+#Run gdb commands automatically
+gdb --command=listOfCommands.gdb binaryFile
