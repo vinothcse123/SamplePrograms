@@ -20,3 +20,7 @@ print("%d %s %f %.20f" %(myInteger,"Hai",myFloat,myFloat))
 print("Integer in hexadecimal (Both are same) %X %x" %(myInteger,myInteger))
 print("Next Line will not be print ", end = '')
 print("Same line ")
+
+
+if __name__ == "__main__":
+    test_SaveNode()
