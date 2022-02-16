@@ -2,6 +2,7 @@ declare
 
 v_numberOutput number;
 v_datevariable date;
+v_stringVar varchar2(2000);
 
 
 --Temporary procedure not stored
