@@ -15,6 +15,20 @@ class TemplateClass
 };
 
 
+class BaseClassWithoutTemplate
+{
+   public:
+   int m_baseClassValue=78;
+
+};
+
+template<typename T>
+class DerivedClassWithTemplate : public BaseClassWithoutTemplate
+{
+    public:
+    T m_value;
+};
+
 void storeTemplateClassInSharedPointerWithDifferentType()
 {
     std::shared_ptr<void> mySharedPtr;
@@ -32,11 +46,31 @@ void storeTemplateClassInSharedPointerWithDifferentType()
 
     std::cout << "string "<<  strPtr->m_value  << "==================" << std::endl;
 
+
+}
+
+void castTemplateClassToBaseClass()
+{
+    std::shared_ptr<void> mySharedPtr;
+
+    mySharedPtr.reset(new DerivedClassWithTemplate<int>());
+
+    DerivedClassWithTemplate<int> *intPtr=static_cast<DerivedClassWithTemplate<int>*>(mySharedPtr.get());
+
+    std::cout << "Int "<<  intPtr->m_value  << "==================" << std::endl;
+
+    //Casting to base class
+
+    BaseClassWithoutTemplate *baseClass=static_cast<BaseClassWithoutTemplate*>(mySharedPtr.get());
+    std::cout << "baseClass "<<  baseClass->m_baseClassValue  << "==================" << std::endl;
+
 }
 
 int main()
 {
     storeTemplateClassInSharedPointerWithDifferentType();
+
+    castTemplateClassToBaseClass();
     
 
    return 0;
