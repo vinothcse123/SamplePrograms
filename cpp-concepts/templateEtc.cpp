@@ -29,6 +29,22 @@ class DerivedClassWithTemplate : public BaseClassWithoutTemplate
     T m_value;
 };
 
+template <class T>
+class TemplateClassAccessInnerClass
+{
+   public:
+   typename T::InnerClass m_value;
+
+};
+
+struct MyClass
+{
+    struct InnerClass
+    {
+        int intValue;
+    };
+};
+
 void storeTemplateClassInSharedPointerWithDifferentType()
 {
     std::shared_ptr<void> mySharedPtr;
@@ -66,12 +82,20 @@ void castTemplateClassToBaseClass()
 
 }
 
+void usingTypeNameBeforeDeclaration()
+{
+    TemplateClassAccessInnerClass<MyClass> obj;
+
+    //   typename T::InnerClass m_value; - Here T can be anything, so asking compiler to skip that validation by specifying typename.
+}
+
 int main()
 {
     storeTemplateClassInSharedPointerWithDifferentType();
 
     castTemplateClassToBaseClass();
-    
+
+    usingTypeNameBeforeDeclaration();
 
    return 0;
 }
