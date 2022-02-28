@@ -3,11 +3,12 @@
 using std::string;
 
 
-template <class T>
+template <class T,class T2=int>
 class TemplateClass 
 {
    public:
    T m_value;
+   T2 m_secondVal;
 
    TemplateClass(T value):
    m_value(value)
@@ -49,9 +50,9 @@ void storeTemplateClassInSharedPointerWithDifferentType()
 {
     std::shared_ptr<void> mySharedPtr;
 
-    mySharedPtr.reset(new TemplateClass<int>(100));
+    mySharedPtr.reset(new TemplateClass<int,float>(100));
 
-    TemplateClass<int> *intPtr=static_cast<TemplateClass<int>*>(mySharedPtr.get());
+    TemplateClass<int,float> *intPtr=static_cast<TemplateClass<int,float>*>(mySharedPtr.get());
 
     std::cout << "Int "<<  intPtr->m_value  << "==================" << std::endl;
 
