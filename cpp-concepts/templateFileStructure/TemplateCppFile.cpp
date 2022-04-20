@@ -1,6 +1,14 @@
 
 #include<TemplateHeaderFile.h>
+using TemplateNameSpace::TemplateClass;
 
+namespace TemplateNameSpace
+{
+   template <>
+   void templateFuncSpecialization<std::string>(std::string a)
+   {
+   }
+}
 
 int main()
 {
