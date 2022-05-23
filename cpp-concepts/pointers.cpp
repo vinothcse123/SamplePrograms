@@ -29,6 +29,12 @@ public:
     {
         cout << "m_var = " << m_var << endl;
     }
+
+    int myMemberFunctionWithParam(int a)
+    {
+        cout << "m_var = " << m_var << endl;
+        return 1;
+    }
 };
 
 void functionPointers()
@@ -42,6 +48,20 @@ void functionPointers()
     cout << "a = " << a << " and b = " << b << endl;
 }
 
+
+
+int ( MyClass::* ( returnMemberFunctionPtr() ) )(int)
+{
+    return &MyClass::myMemberFunctionWithParam;
+}
+
+typedef int (MyClass::*MyMemberFuncPointer_t)(int);
+
+MyMemberFuncPointer_t returnMemberFunctionPtrUsingTypeDef()
+{
+    return &MyClass::myMemberFunctionWithParam;
+}
+
 void memberFunctionPointers()
 {
     MyClass myObj;
@@ -50,6 +70,10 @@ void memberFunctionPointers()
     pointerToMemberFunc = &MyClass::myMemberFunction;
 
     (myObj.*pointerToMemberFunc)();
+
+    returnMemberFunctionPtr();
+
+    returnMemberFunctionPtrUsingTypeDef();
 }
 
 void weakPointer()
