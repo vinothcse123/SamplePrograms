@@ -1,5 +1,9 @@
 declare
 
+--Generic types
+
+tableName varchar2(100) := 'mytable';
+
 -- Array
 TYPE namearray_t IS VARRAY(5) OF VARCHAR2(10); 
 Type grades_t IS VARRAY(5) OF INTEGER;
