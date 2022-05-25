@@ -2,6 +2,7 @@ DECLARE
   v_dummy NUMBER:=1;
   v_errm  VARCHAR2(64);
   v_query VARCHAR2(2000);
+  v_code number;
 BEGIN
   WHILE (v_dummy > 0)
   LOOP
