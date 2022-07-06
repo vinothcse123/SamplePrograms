@@ -22,16 +22,16 @@ public:
     delete[] ptr2;
   }
 
-  class iterator
+  class iteratorVino
   {
   public:
-    iterator(int *ptr) : ptr(ptr) {}
-    iterator operator++()
+    iteratorVino(int *ptr) : ptr(ptr) {}
+    iteratorVino operator++()
     {
       ++ptr;
       return *this;
     }
-    bool operator!=(const iterator &other) const { return ptr != other.ptr; }
+    bool operator!=(const iteratorVino &other) const { return ptr != other.ptr; }
     const int &operator*() const { return *ptr; }
 
   private:
@@ -40,15 +40,15 @@ public:
 
   int *ptr2;
 
-  iterator begin() const
+  iteratorVino begin() const
   {
-    return iterator(ptr2);
+    return iteratorVino(ptr2);
     ;
   }
 
-  iterator end() const
+  iteratorVino end() const
   {
-    return iterator(ptr2 + m_arrayLength);
+    return iteratorVino(ptr2 + m_arrayLength);
     ;
   }
 };
