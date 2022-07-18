@@ -1,10 +1,19 @@
+
+printf  "== GDB Init file loaded ==\n"
+
 define sb
         save breakpoints v6SavedBreakpoints.txt
 end
 
-source v6SavedBreakpoints.txt
+
+define bload
+    source /RMS/nrsp/vinoth/etc/gdbBreakpoints.txt
+end
+
+bload
 
 ######## print settings
+catch throw
 set print address off
 set print repeats 0
 set print pretty on
