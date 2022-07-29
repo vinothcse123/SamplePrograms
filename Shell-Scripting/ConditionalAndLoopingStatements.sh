@@ -79,3 +79,8 @@ end=5
 for ((i=1;i<=end;i++)); do
 echo "Welcome $i times"
 done
+
+for fileName in `find ./ -iname "*.json" `;
+do
+    echo $fileName
+done
