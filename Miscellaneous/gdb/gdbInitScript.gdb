@@ -24,3 +24,7 @@ set print pretty on
 #set logging on #By default writes to gdb.txt
 #set logging file myFile.log
 
+##########ETC
+set breakpoint pending on
+
+
