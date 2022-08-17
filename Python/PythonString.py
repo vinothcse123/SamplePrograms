@@ -31,13 +31,17 @@ def basicStringFunctionality():
 
 def substringAndParsing():
 
-    myVar="HELLO.HAI120"
+    myVar="HELLO.HAI120-HAI"
 
     substrPositition=myVar.find(".")
+    hypenPos=myVar.find("-",substrPositition)
 
-    if substrPositition != -1:
+    
+
+    if substrPositition != -1 and hypenPos != -1:
         print(substrPositition)
-        print(myVar[substrPositition+1:substrPositition+4])
+        print(hypenPos)
+        print(myVar[substrPositition+1:hypenPos])
     else:
         print("Unable to find substring....")
 
