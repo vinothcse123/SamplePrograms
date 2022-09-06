@@ -1,6 +1,5 @@
 
 
-
 def basicStringFunctionality():
     mystring="Hai Hello"
     mystringAsNumbers="0123456789"
@@ -28,6 +27,9 @@ def basicStringFunctionality():
     print(isEndsWith)
     print(convertToList)
 
+def isStringContainsSubString():
+    if "HAI" in "HELLOHAIHE":
+        print("Present")
 
 def substringAndParsing():
 
@@ -37,7 +39,6 @@ def substringAndParsing():
     hypenPos=myVar.find("-",substrPositition)
 
     
-
     if substrPositition != -1 and hypenPos != -1:
         print(substrPositition)
         print(hypenPos)
@@ -47,4 +48,6 @@ def substringAndParsing():
 
 if __name__ == "__main__":
     # basicStringFunctionality()
-    substringAndParsing()
+    # substringAndParsing()
+    isStringContainsSubString()
+    pass
