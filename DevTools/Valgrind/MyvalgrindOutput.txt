@@ -1,0 +1,93 @@
+==20077== Memcheck, a memory error detector
+==20077== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==20077== Using Valgrind-3.15.0-608cb11914-20190413 and LibVEX; rerun with -h for copyright info
+==20077== Command: ./a.out
+==20077== Parent PID: 11565
+==20077== 
+--20077-- 
+--20077-- Valgrind options:
+--20077--    --leak-check=full
+--20077--    --verbose
+--20077--    --log-file=MyvalgrindOutput.txt
+--20077-- Contents of /proc/version:
+--20077--   Linux version 3.10.0-1160.66.1.el7.x86_64 (mockbuild@build-ol7-x86_64.oracle.com) (gcc version 4.8.5 20150623 (Red Hat 4.8.5-44.0.3) (GCC) ) #1 SMP Thu May 19 07:43:31 PDT 2022
+--20077-- 
+--20077-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-rdtscp-sse3-ssse3-avx
+--20077-- Page sizes: currently 4096, max supported 4096
+--20077-- Valgrind library directory: /usr/libexec/valgrind
+--20077-- Reading syms from /RMS/nrsp/vinoth/playground/valgrindDemo/a.out
+--20077-- Reading syms from /usr/lib64/ld-2.17.so
+--20077-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--20077--    object doesn't have a symbol table
+--20077--    object doesn't have a dynamic symbol table
+--20077-- Scheduler: using generic scheduler lock implementation.
+--20077-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==20077== embedded gdbserver: reading from /RMS/data/temp/vgdb-pipe-from-vgdb-to-20077-by-nrspapp-on-dayrheaggdx1.enterprisenet.org
+==20077== embedded gdbserver: writing to   /RMS/data/temp/vgdb-pipe-to-vgdb-from-20077-by-nrspapp-on-dayrheaggdx1.enterprisenet.org
+==20077== embedded gdbserver: shared mem   /RMS/data/temp/vgdb-pipe-shared-mem-vgdb-20077-by-nrspapp-on-dayrheaggdx1.enterprisenet.org
+==20077== 
+==20077== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==20077== don't want to do, unless you know exactly what you're doing,
+==20077== or are doing some strange experiment):
+==20077==   /usr/libexec/valgrind/../../bin/vgdb --pid=20077 ...command...
+==20077== 
+==20077== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==20077==   /path/to/gdb ./a.out
+==20077== and then give GDB the following command
+==20077==   target remote | /usr/libexec/valgrind/../../bin/vgdb --pid=20077
+==20077== --pid is optional if only one valgrind process is running
+==20077== 
+--20077-- REDIR: 0x4019e50 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c7ed5 (???)
+--20077-- REDIR: 0x4019c20 (ld-linux-x86-64.so.2:index) redirected to 0x580c7eef (???)
+--20077-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--20077-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+==20077== WARNING: new redirection conflicts with existing -- ignoring it
+--20077--     old: 0x04019e50 (strlen              ) R-> (0000.0) 0x580c7ed5 ???
+--20077--     new: 0x04019e50 (strlen              ) R-> (2007.0) 0x04c2d1b0 strlen
+--20077-- REDIR: 0x4019dd0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c2e300 (strcmp)
+--20077-- REDIR: 0x401aa90 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c31f90 (mempcpy)
+--20077-- Reading syms from /usr/lib64/libstdc++.so.6.0.19
+--20077--    object doesn't have a symbol table
+--20077-- Reading syms from /usr/lib64/libm-2.17.so
+--20077-- Reading syms from /usr/lib64/libgcc_s-4.8.5-20150702.so.1
+--20077--    object doesn't have a symbol table
+--20077-- Reading syms from /usr/lib64/libc-2.17.so
+--20077-- REDIR: 0x56e71d0 (libc.so.6:strcasecmp) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x56e3f40 (libc.so.6:strnlen) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x56e94d0 (libc.so.6:strncasecmp) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x56e69a0 (libc.so.6:memset) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x56e6950 (libc.so.6:memcpy@GLIBC_2.2.5) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x56e5930 (libc.so.6:__GI_strrchr) redirected to 0x4c2cb70 (__GI_strrchr)
+--20077-- REDIR: 0x56e3e60 (libc.so.6:__GI_strlen) redirected to 0x4c2d110 (__GI_strlen)
+--20077-- REDIR: 0x56e63c0 (libc.so.6:__GI_memcmp) redirected to 0x4c30450 (__GI_memcmp)
+--20077-- REDIR: 0x56e23c0 (libc.so.6:strcmp) redirected to 0x4a247a0 (_vgnU_ifunc_wrapper)
+--20077-- REDIR: 0x5796020 (libc.so.6:__strcmp_sse42) redirected to 0x4c2e2b0 (__strcmp_sse42)
+--20077-- REDIR: 0x4e96170 (libstdc++.so.6:operator new(unsigned long)) redirected to 0x4c2a50c (operator new(unsigned long))
+--20077-- REDIR: 0x4e96280 (libstdc++.so.6:operator new[](unsigned long)) redirected to 0x4c2abb1 (operator new[](unsigned long))
+--20077-- REDIR: 0x56dcb60 (libc.so.6:free) redirected to 0x4c2afe6 (free)
+==20077== 
+==20077== HEAP SUMMARY:
+==20077==     in use at exit: 804 bytes in 2 blocks
+==20077==   total heap usage: 2 allocs, 0 frees, 804 bytes allocated
+==20077== 
+==20077== Searching for pointers to 2 not-freed blocks
+==20077== Checked 196,496 bytes
+==20077== 
+==20077== 4 bytes in 1 blocks are definitely lost in loss record 1 of 2
+==20077==    at 0x4C2A593: operator new(unsigned long) (vg_replace_malloc.c:344)
+==20077==    by 0x4006EE: simpleIntleakFunction() (myCppFile.cpp:11)
+==20077==    by 0x400715: main (myCppFile.cpp:22)
+==20077== 
+==20077== 800 bytes in 1 blocks are definitely lost in loss record 2 of 2
+==20077==    at 0x4C2AC38: operator new[](unsigned long) (vg_replace_malloc.c:433)
+==20077==    by 0x400706: arrayLeakFunction() (myCppFile.cpp:16)
+==20077==    by 0x40071A: main (myCppFile.cpp:23)
+==20077== 
+==20077== LEAK SUMMARY:
+==20077==    definitely lost: 804 bytes in 2 blocks
+==20077==    indirectly lost: 0 bytes in 0 blocks
+==20077==      possibly lost: 0 bytes in 0 blocks
+==20077==    still reachable: 0 bytes in 0 blocks
+==20077==         suppressed: 0 bytes in 0 blocks
+==20077== 
+==20077== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
