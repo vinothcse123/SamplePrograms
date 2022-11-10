@@ -8,3 +8,16 @@ done
 ARRAY=()
 ARRAY+=('foo')
 ARRAY+=('bar')
+
+#Array of Array
+
+
+array=("Vinoth Kiruba" "PavanKarthi DevaSastika")
+
+for list in "${array[@]}"
+do
+    for item in $list
+    do
+        echo $item
+    done
+done
