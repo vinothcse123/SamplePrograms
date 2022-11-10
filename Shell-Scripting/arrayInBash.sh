@@ -4,3 +4,7 @@ for x in ${myArray[@]}
 do
     echo $x
 done
+
+ARRAY=()
+ARRAY+=('foo')
+ARRAY+=('bar')
