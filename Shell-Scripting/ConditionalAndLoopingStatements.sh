@@ -8,16 +8,16 @@ printf "\nEnter the choice: "
 read choice
 
 if [ $choice = 1 ]; then
-
     V_DB_ID=1;
-
 else
-
     V_DB_ID=2;
-
 fi;
 
 echo $V_DB_ID
+
+if [ $agdTprId -ge $startWeek ] && [ $agdTprId -le $endWeek ]; then
+echo "$file"
+fi
 
 
 
