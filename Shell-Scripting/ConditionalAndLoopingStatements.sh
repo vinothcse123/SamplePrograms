@@ -1,4 +1,4 @@
-/* if else statement.sh */
+/********************************************* IF STATEMENT ********************************************/
 
 printf "\n1 - vinothdb"
 printf "\n2 - vinothdbTEST"
@@ -65,6 +65,8 @@ fi
 if [ X"$MYENV" = X"1" ]; then
 
 
+/********************************************* FOR LOOP ********************************************/
+
 declare -a myArray=("Vinoth" "Kiruba")
 
 for i in "${myArray[@]}"
@@ -83,4 +85,16 @@ done
 for fileName in `find ./ -iname "*.json" `;
 do
     echo $fileName
+done
+
+
+for tableName in {"VINOTH","KIRUBA"}
+do
+    echo $tableName
+done
+
+
+for tableName in "VINOTH KUMAR" "KIRUBA SUBRAMANI"
+do
+    echo $tableName
 done
