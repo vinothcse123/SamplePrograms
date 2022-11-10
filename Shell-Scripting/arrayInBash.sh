@@ -5,6 +5,10 @@ do
     echo $x
 done
 
+firstPos=${myArray[0]}
+secondPos=${myArray[1]}
+
+
 ARRAY=()
 ARRAY+=('foo')
 ARRAY+=('bar')
