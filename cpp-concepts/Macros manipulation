@@ -2,6 +2,7 @@
 using namespace std;
 #define PRINT_FUNC_NAME printf("Entered the function %s in line no %d\n",__FUNCTION__,__LINE__);
 
+#define MACRO_WITH_ARGUMENTS(myArgument) std::cout <<"Macro with Arguments" << myArgument;
 
 
 int main()
