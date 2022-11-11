@@ -1,5 +1,7 @@
 #include<iostream>
 using namespace std;
+
+
 #define PRINT_FUNC_NAME printf("Entered the function %s in line no %d\n",__FUNCTION__,__LINE__);
 
 #define MACRO_WITH_ARGUMENTS(myArgument) std::cout <<"Macro with Arguments" << myArgument;
@@ -8,8 +10,8 @@ using namespace std;
 int main()
 {
   
-/* Print Function name using macro */
    PRINT_FUNC_NAME
+   MACRO_WITH_ARGUMENTS("379");
       
    return 0;
 }
