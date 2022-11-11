@@ -6,12 +6,16 @@ using namespace std;
 
 #define MACRO_WITH_ARGUMENTS(myArgument) std::cout <<"Macro with Arguments" << myArgument;
 
+#define CHANGE_TO_STRING_LITERAL(myIntLiteral) std::string a(#myIntLiteral);
+
 
 int main()
 {
   
    PRINT_FUNC_NAME
    MACRO_WITH_ARGUMENTS("379");
+   CHANGE_TO_STRING_LITERAL(124)
+
       
    return 0;
 }
