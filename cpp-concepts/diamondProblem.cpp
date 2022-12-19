@@ -14,12 +14,12 @@ class Language
 	char a;
 };
  
-class C : public Language
+class C : public virtual Language
 {
 		
 };
  
-class CPP : public Language
+class CPP : public virtual Language
 {
 	
 };
