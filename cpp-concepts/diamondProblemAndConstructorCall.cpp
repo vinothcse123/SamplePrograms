@@ -9,24 +9,52 @@ char 1 byte
 */
  
  
-class Language
+struct Language
 {
 	char a;
+
+	Language(int a)
+	{
+
+	}
+
+	Language(int a,int b)
+	{
+
+	}
+
+	Language(int a,int b,int c)
+	{
+
+	}
 };
  
-class C : public virtual Language
+struct C : public virtual Language
 {
+	C():
+	Language(100)
+	{
+
+	}
 		
 };
  
-class CPP : public virtual Language
+struct CPP : public virtual Language
 {
-	
+	CPP():
+	Language(10,20)
+	{
+
+	}
 };
  
-class Program : C,CPP
+struct Program : C,CPP
 {
-	
+	Program():
+	Language(10,20,30)
+	{
+
+	}
 };
  
 
