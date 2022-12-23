@@ -8,7 +8,22 @@ using std::cout;
 using std::string;
 using std::move;
 
+void myFunction(int &a)
+{
+    cout<< "functionWithLvalue\n";	
+}
 
+
+void myFunction(int &&a)
+{
+    cout<< "functionWithRvalue\n";	
+}
+
+
+void myFunctionWithoutRvalueVersion(int &a)
+{
+    cout<< "myFunctionWithoutRvalueVersion\n";	
+}
 
 void forwardInCpp()
 {
@@ -19,28 +34,16 @@ void forwardInCpp()
     //[H1]: using forward for named Rvalue : Exisiting rvalue is transferred as rvalue again.
     int &&namedRValue = move(a);
 
-    // int &&namedRValueConvertsToAnotherNamedRvalue = namedRValue; Error because namedRvalue is converted to lvalue internally
+    myFunction(a); // calls myFunction(int &a). NamedRvalue is Lvalue so function with lvalue is called.
 
-    int &&namedRValueConvertsToAnotherNamedRvalue = std::forward<int>(namedRValue); // Ok, because using forward transfer named rvalue as rvalue again.
+    myFunction(std::forward<int>(a)); // calls myFunction(int &&a). NamedRvalue is Lvalue, but since we used forward named rvalue is passed rvalue again.
 
-
-
-
-    //[H2]:using forward for lvalue : lvalue is transferred as lvalue again
-
-    //lvalue is forwarded as lvalue again
-    int anotherVariable = std::forward<int>(a); 
-
-    //named rvalue is forwarded as rvalue, but named rvalue is implicitly converted to lvalue again
-    int anotherVariable = std::forward<int>(namedRValue); 
-
+    //myFunctionWithoutRvalueVersion(std::forward<int>(a)); // Error, because myFunctionWithoutRvalueVersion is not accepting rvalue.  
 }
 
 int main()
 {
-    int myNumber=-1;
     forwardInCpp();
 
-    cout<< "Result :" << myNumber << '\n';	
     return 0;
 }
