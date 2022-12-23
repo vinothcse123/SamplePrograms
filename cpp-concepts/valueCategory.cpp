@@ -28,10 +28,10 @@ MyClass getObject()
 
 void lvalueCategory()
 {
-    int x=10;
+    int x=10; // Here subexpression x is lvalue because address of x can be taken.
 
     //1. Expression whose address can be taken
-    "Hai Hello"; // This literal is stored somewhere, so lvalue
+    "Hai Hello"; // This literal is stored somewhere in static location, so lvalue. Normally in code we will get starting address of this.
     ++x; // Here after expression address can be taken, it is lvalue.
 
     //2. If expression has some identity, then it is lvalue
