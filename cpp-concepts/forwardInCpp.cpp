@@ -38,6 +38,10 @@ void forwardInCpp()
 
     myFunction(std::forward<int>(namedRValue)); // calls myFunction(int &&a). NamedRvalue is Lvalue, but since we used forward named rvalue is passed rvalue again.
 
+    myFunction(a); // calls myFunction(int &a). 
+
+    myFunction(100); // calls myFunction(int &&a). 
+
     myFunction(std::forward<int>(a)); // calls myFunction(int &&a). Reason to be find.
 
     //myFunctionWithoutRvalueVersion(std::forward<int>(a)); // Error, because myFunctionWithoutRvalueVersion is not accepting rvalue.  
