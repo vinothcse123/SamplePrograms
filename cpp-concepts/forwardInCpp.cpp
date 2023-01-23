@@ -40,11 +40,22 @@ void forwardInCpp()
 
     myFunction(a); // calls myFunction(int &a). 
 
-    myFunction(100); // calls myFunction(int &&a). 
+    myFunction(100); // calls myFunction(int &&a).
+
+    int &myLvalueRef=a; 
+    
+    myFunction(std::forward<int>(myLvalueRef)); // calls myFunction(int &&a). Reason to be find.
+
+    myFunction(std::forward<int&>(myLvalueRef)); // calls myFunction(int &a). Reason to be find.
 
     myFunction(std::forward<int>(a)); // calls myFunction(int &&a). Reason to be find.
 
+    myFunction(std::forward<int&>(a)); // calls myFunction(int &a). Reason to be find.
+
     //myFunctionWithoutRvalueVersion(std::forward<int>(a)); // Error, because myFunctionWithoutRvalueVersion is not accepting rvalue.  
+
+    std::cout << " ==============V6P: Example "<<  123456  << "==================" << std::endl;
+
 }
 
 int main()
