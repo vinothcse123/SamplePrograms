@@ -9,28 +9,33 @@ char 1 byte
 */
  
  
-class Language
+class A
 {
-	char a;
+    public:
+	    int aVar;
 };
  
-class C : public virtual Language
+class B : public virtual A
 {
-		
+		int bVar;
 };
  
-class CPP : public virtual Language
+class C : public virtual  A
 {
-	
+	int cVar;
 };
  
-class Program : C,CPP
+class D : public  B,C
 {
-	
+public:
+	    char dVar;
 };
- 
+
 
 int main()
 {
+    D d;
+    std::cout << sizeof(D) <<std::endl;
+    d.aVar=90;
 	return 0;
 }
