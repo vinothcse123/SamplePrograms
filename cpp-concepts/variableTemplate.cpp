@@ -3,24 +3,14 @@
 #include<vector>
 
 template<typename T>
-T variableTemplateVariable = T(100);
+T piValue = T(3.1415926535897932385);
 
 int main()
 {
 
-    variableTemplateVariable<int> = 19;
-    std::cout<< "variableTemplateVariable<int> :" << variableTemplateVariable<int> << '\n';	
-
-    std::cout<< "variableTemplateVariable<double> :" << variableTemplateVariable<double> << '\n';	
-
-    variableTemplateVariable<double> = 87.78;
-    std::cout<< "variableTemplateVariable<double> :" << variableTemplateVariable<double> << '\n';	
+    std::cout<< "Using Pi as int value :" << piValue<int> << '\n';	
+    std::cout<< "Using Pi as int double :" << piValue<double> << '\n';	
+    std::cout<< "Using Pi as int float :" << piValue<float> << '\n';	
 
     return 0;
 }
-
-//Result
-
-// variableTemplateVariable<int> :19
-// variableTemplateVariable<double> :100
-// variableTemplateVariable<double> :87.78
