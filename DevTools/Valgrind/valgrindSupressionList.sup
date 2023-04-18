@@ -1,0 +1,6 @@
+{
+   MySupression
+   Memcheck:Leak
+   obj:libclntsh.so.*
+   obj:libclntshcore.so.*
+}
