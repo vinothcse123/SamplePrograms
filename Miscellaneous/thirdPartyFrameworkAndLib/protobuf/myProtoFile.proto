@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+
+message MyProtoBufStructure 
+{
+  required string myMessageAsString = 1;
+  optional int32 myMessageAsInt = 2;
+}
