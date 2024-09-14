@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <cctype>
 
 
 void manipualteString()
@@ -23,9 +24,23 @@ void manipualteString()
 	manip.append("GANESAN");
 	
 	std::string concated=manip+std::string("KARUR");
+	
+}
+
+void convertCases()
+{
+    std::string str= "VINOTH";
+    
+    for(char &c : str)
+    {
+        c = std::tolower(c); //cctype and ensure to assign the result value
+    }
+    
+    std::cout << str;
 }
 
 int main()
 {  
-  manipualteString();
+  //manipualteString();
+  convertCases();
 }
