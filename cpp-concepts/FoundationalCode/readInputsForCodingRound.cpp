@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <sstream>
 
 void readLinesAsArray()
 {
@@ -50,8 +51,23 @@ void readMatrix()
         
 }
 
+void readCommaSeparatedArray()
+{
+    std::string line;
+    std::cin >> line;
+    std::string curToken;
+    std::stringstream ss(line);
+    
+    while(std::getline(ss,curToken,','))
+    {
+        std::cout << curToken << "\n";
+    }
+    
+}
+
 int main()
 {  
   //readLinesAsArray();
-  readMatrix();
+  //readMatrix();
+  readCommaSeparatedArray();
 }
