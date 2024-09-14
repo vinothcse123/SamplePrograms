@@ -39,8 +39,21 @@ void convertCases()
     std::cout << str;
 }
 
+bool isAlphaNumericString()
+{
+     std::string str= "VINOTH123";
+     
+    for (char c : str) {
+        if (!std::isalnum(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main()
 {  
   //manipualteString();
-  convertCases();
+  //convertCases();
+  isAlphaNumericString();
 }
